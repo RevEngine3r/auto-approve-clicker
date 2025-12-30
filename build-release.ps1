@@ -54,8 +54,9 @@ $Script:DefaultExclusions = @(
     "PROJECT_MAP.md",
     ".gitignore",
     ".buildignore",
+    "build-release.ps1",
     "*.ps1",
-	"*.bat"
+    "*.bat"
 )
 
 #region Helper Functions
@@ -215,32 +216,58 @@ function Test-ShouldExclude {
         [string[]]$Patterns
     )
     
-    $relativePath = $Path.TrimStart('.\').TrimStart('.\\')
+    # Normalize path: remove leading ./ or .\ and convert to forward slashes
+    $relativePath = $Path.TrimStart('.').TrimStart('/').TrimStart('\').Replace('\', '/')
     
     # Check default exclusions
     foreach ($exclusion in $Script:DefaultExclusions) {
-        if ($exclusion.EndsWith('*')) {
-            # Wildcard pattern
-            $pattern = $exclusion.TrimEnd('*')
-            if ($relativePath -like "*$pattern*") {
+        # Normalize exclusion pattern
+        $normalizedExclusion = $exclusion.Replace('\', '/')
+        
+        if ($normalizedExclusion.Contains('*')) {
+            # Wildcard pattern - use -like operator
+            if ($relativePath -like $normalizedExclusion) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (wildcard): $relativePath (matched: $normalizedExclusion)"
+                }
                 return $true
             }
         }
-        elseif ($relativePath -eq $exclusion -or $relativePath.StartsWith("$exclusion\\")) {
-            return $true
+        else {
+            # Exact match or directory match
+            # Match if path equals exclusion OR path starts with exclusion/
+            if ($relativePath -eq $normalizedExclusion -or 
+                $relativePath.StartsWith("$normalizedExclusion/")) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (exact): $relativePath (matched: $normalizedExclusion)"
+                }
+                return $true
+            }
         }
     }
     
     # Check .buildignore patterns
     foreach ($pattern in $Patterns) {
-        if ($pattern.Contains('*')) {
+        $normalizedPattern = $pattern.Replace('\', '/')
+        
+        if ($normalizedPattern.Contains('*')) {
             # Wildcard pattern
-            if ($relativePath -like $pattern) {
+            if ($relativePath -like $normalizedPattern) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (buildignore wildcard): $relativePath (matched: $normalizedPattern)"
+                }
                 return $true
             }
         }
-        elseif ($relativePath -eq $pattern -or $relativePath.StartsWith("$pattern\\")) {
-            return $true
+        else {
+            # Exact match or directory match
+            if ($relativePath -eq $normalizedPattern -or 
+                $relativePath.StartsWith("$normalizedPattern/")) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (buildignore): $relativePath (matched: $normalizedPattern)"
+                }
+                return $true
+            }
         }
     }
     
@@ -274,9 +301,10 @@ function New-ReleasePackage {
             Write-Info "Removed existing: $zipFileName"
         }
         
-        # Get all files/folders in current directory
-        $allItems = Get-ChildItem -Path . -Recurse -Force
+        # Get all files in current directory (recursively)
+        $allItems = Get-ChildItem -Path . -Recurse -Force -File
         $includedFiles = @()
+        $excludedCount = 0
         
         Write-Info "Scanning files for packaging..."
         
@@ -285,22 +313,21 @@ function New-ReleasePackage {
             
             # Skip if excluded
             if (Test-ShouldExclude -Path $relativePath -Patterns $CustomExclusions) {
-                if ($VerboseOutput) {
-                    Write-Verbose "Excluded: $relativePath"
-                }
+                $excludedCount++
                 continue
             }
             
-            # Include only files (not directories)
-            if (-not $item.PSIsContainer) {
-                $includedFiles += $item.FullName
-                if ($VerboseOutput) {
-                    Write-Verbose "Included: $relativePath"
-                }
+            $includedFiles += $item.FullName
+            if ($VerboseOutput) {
+                Write-Verbose "Included: $relativePath"
             }
         }
         
-        Write-Info "Packaging $($includedFiles.Count) files..."
+        Write-Info "Including $($includedFiles.Count) files (excluded $excludedCount files)"
+        
+        if ($includedFiles.Count -eq 0) {
+            throw "No files to package! Check your exclusion patterns."
+        }
         
         # Create ZIP using .NET compression
         Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -310,7 +337,7 @@ function New-ReleasePackage {
         try {
             foreach ($file in $includedFiles) {
                 $relativePath = $file.Substring((Get-Location).Path.Length + 1)
-                # Normalize path separators for ZIP
+                # Normalize path separators for ZIP (use forward slashes)
                 $entryName = $relativePath.Replace('\', '/')
                 [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file, $entryName) | Out-Null
             }
@@ -390,7 +417,10 @@ function Main {
         # Step 5: Load exclusion patterns
         Write-Step "Loading build configuration"
         $customExclusions = Get-BuildIgnorePatterns
-        Write-Info "Total exclusion patterns: $($Script:DefaultExclusions.Count + $customExclusions.Count)"
+        Write-Info "Default exclusions: $($Script:DefaultExclusions.Count) patterns"
+        if ($customExclusions.Count -gt 0) {
+            Write-Info "Custom exclusions: $($customExclusions.Count) patterns"
+        }
         
         # Step 6: Create release package
         Write-Step "Building release package"
