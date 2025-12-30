@@ -1,2 +1,285 @@
-# auto-approve-clicker
-Chrome extension that auto-clicks Approve buttons on manually enabled URLs
+# ⚡ Auto-Approve Clicker
+
+> A Chrome extension that automatically clicks "Approve" buttons on user-specified URLs every 1 second.
+
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+## 🌟 Features
+
+- **Automatic Clicking**: Finds and clicks "Approve" buttons every 1 second on enabled URLs
+- **Per-URL Control**: Manually enable/disable extension for each URL individually
+- **Smart Detection**: Targets buttons with specific classes and "Approve" text (case-insensitive)
+- **Modern UI**: Beautiful gradient design with intuitive settings page
+- **Quick Toggle**: Popup interface for fast enable/disable on current tab
+- **SPA Support**: Detects URL changes in single-page applications
+- **Real-time Sync**: Changes sync instantly across all tabs and windows
+- **No Background Drain**: Only runs on enabled URLs, minimal resource usage
+
+## 🎯 Target Button
+
+The extension looks for buttons with this structure:
+
+```html
+<button class="bg-inverse text-inverse ...">
+  <!-- ... -->
+  <div>Approve</div>
+  <!-- ... -->
+</button>
+```
+
+**Selection Criteria**:
+- Button element with classes `bg-inverse` AND `text-inverse`
+- Contains text "Approve" (case-insensitive)
+- Clicks once found, every 1 second
+
+## 📦 Installation
+
+### Install from Source (Developer Mode)
+
+1. **Download the Extension**
+   ```bash
+   git clone https://github.com/RevEngine3r/auto-approve-clicker.git
+   cd auto-approve-clicker
+   ```
+
+2. **Open Chrome Extensions Page**
+   - Navigate to `chrome://extensions/`
+   - Or click Menu → Extensions → Manage Extensions
+
+3. **Enable Developer Mode**
+   - Toggle "Developer mode" switch in top-right corner
+
+4. **Load the Extension**
+   - Click "Load unpacked"
+   - Select the `auto-approve-clicker` folder
+   - Extension icon (⚡) should appear in toolbar
+
+## 🚀 Usage
+
+### Quick Start
+
+1. **Navigate to Target Page**
+   - Go to any webpage where you want auto-clicking enabled
+
+2. **Enable Auto-Clicking**
+   - Click the extension icon (⚡) in toolbar
+   - Click "▶️ Enable for This URL"
+   - Status will show "✅ Enabled"
+
+3. **Extension is Active**
+   - Every 1 second, the extension searches for Approve buttons
+   - Automatically clicks when found
+   - Console logs clicks for debugging
+
+### Settings Page
+
+Access full settings via:
+- Right-click extension icon → "Options"
+- Or click "⚙️ Manage All URLs" in popup
+
+**Settings Features**:
+- **Add URLs**: Enter full or partial URLs (e.g., `example.com`)
+- **Remove URLs**: Click "Remove" next to any URL
+- **Clear All**: Remove all enabled URLs at once
+- **URL Counter**: See how many URLs are enabled
+
+### URL Matching
+
+**Flexible Matching** - URLs use substring matching:
+- Enable `example.com` → Works on:
+  - `https://example.com`
+  - `https://example.com/page`
+  - `http://example.com/any/path`
+  - `https://subdomain.example.com` (also matches!)
+
+**Best Practices**:
+- Use domain name only for entire site: `example.com`
+- Use full path for specific pages: `example.com/specific-page`
+- Add protocol to be more specific: `https://example.com`
+
+## 🛠️ Technical Details
+
+### Architecture
+
+- **Manifest V3**: Latest Chrome extension standard
+- **Content Script** (`content.js`): Runs on all pages, activates when URL matches
+- **Background Worker** (`background.js`): Manages storage and coordinates components
+- **Options Page** (`options/`): Full URL management interface
+- **Popup** (`popup/`): Quick toggle for current tab
+- **Storage**: Chrome Sync Storage (cross-device sync)
+
+### File Structure
+
+```
+auto-approve-clicker/
+├── manifest.json          # Extension configuration
+├── background.js          # Service worker
+├── content.js             # Auto-click logic
+├── icons/                 # Extension icons
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── options/               # Settings page
+│   ├── options.html
+│   └── options.js
+├── popup/                 # Quick toggle popup
+│   ├── popup.html
+│   └── popup.js
+├── PROJECT_MAP.md         # Project structure docs
+├── PROGRESS.md            # Development progress
+└── README.md              # This file
+```
+
+### Button Detection Algorithm
+
+1. Query all buttons: `button.bg-inverse.text-inverse`
+2. Filter by text content: contains "approve" (case-insensitive)
+3. Click first matching button
+4. Repeat every 1000ms (1 second)
+
+### Permissions
+
+- `storage`: Save enabled URLs list
+- `activeTab`: Access current tab in popup
+- `scripting`: Inject content script dynamically
+- `host_permissions: <all_urls>`: Run on any website
+
+## 🧪 Testing Checklist
+
+- [ ] Extension loads without errors
+- [ ] Popup opens and shows current URL
+- [ ] Can enable URL from popup
+- [ ] Can disable URL from popup
+- [ ] Options page opens correctly
+- [ ] Can add URLs in options page
+- [ ] Can remove individual URLs
+- [ ] Can clear all URLs with confirmation
+- [ ] Content script activates on enabled URLs
+- [ ] Button is detected and clicked
+- [ ] Auto-click stops when URL disabled
+- [ ] Works on SPA navigation (URL changes without reload)
+- [ ] Changes sync across multiple tabs
+- [ ] No errors in console
+
+## 🐛 Troubleshooting
+
+### Extension Not Working
+
+**Problem**: No buttons are being clicked
+
+**Solutions**:
+1. Check if URL is enabled (popup should show "✅ Enabled")
+2. Open DevTools Console (F12) - look for `[Auto-Approve]` logs
+3. Verify button exists with correct classes: `bg-inverse text-inverse`
+4. Check button contains "Approve" text
+5. Try refreshing the page after enabling
+
+### Button Not Detected
+
+**Problem**: Logs show no button found
+
+**Solutions**:
+1. Inspect the button element (right-click → Inspect)
+2. Verify classes are exactly `bg-inverse` and `text-inverse`
+3. Check if button text contains "Approve"
+4. Button might load dynamically - extension checks every second
+
+### URL Not Enabling
+
+**Problem**: Clicking "Enable" doesn't work
+
+**Solutions**:
+1. Check browser console for errors
+2. Try adding URL from settings page instead
+3. Verify you're not on restricted page (chrome://, etc.)
+4. Check extension has proper permissions
+
+### Sync Issues
+
+**Problem**: Changes don't appear in other tabs
+
+**Solutions**:
+1. Reload all tabs with the URL
+2. Check Chrome Sync is enabled in browser settings
+3. Wait a few seconds for sync to propagate
+
+## ⚙️ Customization
+
+### Change Target Button
+
+To target a different button, modify `content.js`:
+
+```javascript
+// Line 13-14: Change selector
+const buttons = document.querySelectorAll('button.your-class-here');
+
+// Line 17-18: Change text matching
+if (buttonText.toLowerCase().includes('your-text-here')) {
+```
+
+### Change Click Interval
+
+To adjust click frequency, modify `content.js`:
+
+```javascript
+// Line 42: Change interval (milliseconds)
+clickInterval = setInterval(() => {
+  findAndClickApproveButton();
+}, 1000); // Change 1000 to your desired interval
+```
+
+## 📝 Development
+
+### Local Development
+
+1. Make changes to source files
+2. Go to `chrome://extensions/`
+3. Click refresh icon on extension card
+4. Test changes immediately
+
+### Debugging
+
+- **Content Script**: Open page DevTools (F12) → Console
+- **Background Worker**: Go to `chrome://extensions/` → Click "service worker"
+- **Popup**: Right-click extension icon → "Inspect popup"
+- **Options Page**: Right-click page → "Inspect"
+
+### Project Documentation
+
+- `PROJECT_MAP.md`: Complete project structure and design
+- `PROGRESS.md`: Development progress and decisions
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 👤 Author
+
+**RevEngine3r**
+- GitHub: [@RevEngine3r](https://github.com/RevEngine3r)
+- Website: [RevEngine3r.ir](https://wWw.RevEngine3r.iR)
+
+## ⚠️ Disclaimer
+
+This extension is for educational and automation purposes. Use responsibly and ensure you have permission to automate interactions on websites you visit. The author is not responsible for any misuse.
+
+## 🙏 Acknowledgments
+
+- Chrome Extensions Documentation
+- Manifest V3 Migration Guide
+- Community feedback and contributions
+
+---
+
+**Made with ⚡ by RevEngine3r**
