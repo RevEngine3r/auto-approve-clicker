@@ -6,7 +6,7 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 ## Approved Roadmap
 1. ✅ **Step 1**: Create GitHub repository and initialize PROJECT_MAP.md + PROGRESS.md
 2. ✅ **Step 2**: Create manifest.json with required permissions and extension metadata
-3. ⏳ **Step 3**: Create content script (content.js) that checks and clicks the Approve button every 1 second
+3. ✅ **Step 3**: Create content script (content.js) that checks and clicks the Approve button every 1 second
 4. ⏳ **Step 4**: Create background service worker (background.js) to manage URL permissions
 5. ⏳ **Step 5**: Create settings/options page (options.html + options.js) for enabling/disabling URLs
 6. ⏳ **Step 6**: Add popup UI (popup.html + popup.js) for quick enable/disable current tab
@@ -60,20 +60,52 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 ### File Created
 - `manifest.json` (33 lines, clean Manifest V3 structure)
 
-### Next Step
-Step 3: Create content.js that finds and clicks the Approve button every 1 second
-
 ---
 
 ## Step 3: Create content.js
 
+### Status: ✅ COMPLETED
+
+### Actions Taken
+- Created content.js with comprehensive auto-click logic (133 lines)
+- Implemented `findAndClickApproveButton()`: Searches for `button.bg-inverse.text-inverse` containing "Approve" text (case-insensitive)
+- Implemented `startAutoClick()`: Starts 1-second interval with immediate first check
+- Implemented `stopAutoClick()`: Cleans up interval
+- Implemented `checkUrlEnabled()`: Checks if current URL matches any in enabled list from storage
+- Added URL change detection for SPA navigation (MutationObserver)
+- Added storage change listener: Re-checks when enabled URLs list updates
+- Added message listener: Responds to popup/background commands (checkStatus, toggle)
+- Added cleanup on page unload
+
+### Key Decisions
+- **Button Detection**: Query all `button.bg-inverse.text-inverse`, then filter by text content containing "approve" (case-insensitive)
+- **URL Matching**: Uses `includes()` for flexible matching (e.g., enabling "example.com" works for "https://example.com/page")
+- **SPA Support**: MutationObserver detects URL changes without page reload
+- **Performance**: Only one interval runs at a time; stops when URL changes
+- **Console Logging**: Added for debugging during development/testing
+
+### File Created
+- `content.js` (133 lines, clean, well-commented)
+
+### Technical Details
+- **Interval**: 1000ms (1 second) as specified
+- **Storage**: Uses `chrome.storage.sync` for cross-device sync
+- **Message Protocol**: Supports `checkStatus` and `toggle` actions
+
+### Next Step
+Step 4: Create background.js service worker to manage URL permissions and coordinate between components
+
+---
+
+## Step 4: Create background.js
+
 ### Status: ⏳ PENDING
 
 ### Planned Actions
-- Check if current URL is in enabled list (chrome.storage.sync)
-- If enabled, start interval to search for button every 1 second
-- Button selector: `button.bg-inverse.text-inverse` containing "Approve" text
-- Click button if found
-- Handle edge cases (button removed, page navigation)
+- Set up service worker lifecycle
+- Initialize default storage structure
+- Handle installation and updates
+- Coordinate between content scripts, popup, and options page
+- Manage enabled URLs list
 
 ---
