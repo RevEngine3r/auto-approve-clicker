@@ -126,6 +126,9 @@ auto-approve-clicker/
 ├── popup/                 # Quick toggle popup
 │   ├── popup.html
 │   └── popup.js
+├── build-release.ps1      # Automated build script
+├── .buildignore           # Build exclusion config
+├── releases/              # Generated packages
 ├── PROJECT_MAP.md         # Project structure docs
 ├── PROGRESS.md            # Development progress
 └── README.md              # This file
@@ -228,6 +231,143 @@ clickInterval = setInterval(() => {
   findAndClickApproveButton();
 }, 1000); // Change 1000 to your desired interval
 ```
+
+## 🏗️ Building for Release
+
+### Prerequisites
+
+- **PowerShell 7+** required ([Download](https://github.com/PowerShell/PowerShell/releases))
+- Works on Windows, macOS, Linux
+
+### Quick Build
+
+Create a production-ready release package:
+
+```powershell
+./build-release.ps1
+```
+
+**What This Does**:
+1. ✅ Generates datetime-based version (e.g., `2025.12.30.1852`)
+2. ✅ Updates `manifest.json` with new version
+3. ✅ Creates ZIP package excluding dev files
+4. ✅ Saves to `releases/auto-approve-clicker-{version}.zip`
+5. ✅ Ready for Chrome Web Store submission
+
+### Version Format
+
+**Automatic Versioning** (default):
+- Format: `YYYY.MM.DD.HHmm`
+- Example: `2025.12.30.1852` = December 30, 2025 at 6:52 PM
+- Each build gets unique version automatically
+- Compatible with Chrome extension requirements
+
+**Custom Version** (optional):
+```powershell
+./build-release.ps1 -CustomVersion "2.0.1.0"
+```
+- Must be 1-4 dot-separated integers (0-65535)
+- Example: `1.0.0`, `2.5.1.0`
+
+### Advanced Options
+
+**Verbose Output** (for debugging):
+```powershell
+./build-release.ps1 -VerboseOutput
+```
+Shows detailed file inclusion/exclusion information.
+
+### Customizing Build Exclusions
+
+Edit `.buildignore` to exclude additional files from builds:
+
+```bash
+# .buildignore example
+test/
+*.log
+temp*.txt
+notes.md
+```
+
+**Default Exclusions** (always excluded):
+- `.git/`, `.github/` - Git metadata
+- `ROAD_MAP/` - Development roadmap  
+- `releases/` - Previous builds
+- `PROGRESS.md`, `PROJECT_MAP.md` - Dev docs
+- `.gitignore`, `.buildignore` - Config files
+- `*.ps1` - Build scripts
+
+### Build Output
+
+Successful build creates:
+```
+releases/
+└── auto-approve-clicker-2025.12.30.1852.zip
+```
+
+**Package Contents**:
+- `manifest.json` (with updated version)
+- `background.js`, `content.js`
+- `popup/`, `options/`, `icons/`
+- `README.md`
+- All other extension files
+
+### After Building
+
+1. **Test the Build**:
+   - Extract ZIP to temporary folder
+   - Load in Chrome as unpacked extension
+   - Verify all functionality works
+
+2. **Commit Version Update**:
+   ```bash
+   git add manifest.json
+   git commit -m "chore: Bump version to {version}"
+   git push
+   ```
+
+3. **Optional - Chrome Web Store**:
+   - Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+   - Upload the ZIP file
+   - Fill in store listing details
+   - Submit for review
+
+4. **Optional - GitHub Release**:
+   ```bash
+   git tag v{version}
+   git push --tags
+   ```
+   - Create release on GitHub
+   - Attach ZIP file as asset
+
+### Troubleshooting Builds
+
+**Build Script Not Found**:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**PowerShell Version Too Old**:
+- Download PowerShell 7+ from [official releases](https://github.com/PowerShell/PowerShell/releases)
+- Or use `pwsh` command if already installed
+
+**Permission Errors**:
+- Run PowerShell as Administrator
+- Or change execution policy (see above)
+
+**Manifest JSON Invalid**:
+- Validate JSON syntax in `manifest.json`
+- Script creates backup before modifying
+- Backup restored automatically on error
+
+### Manual Build (Alternative)
+
+If PowerShell unavailable, create ZIP manually:
+
+1. **Update Version**: Edit `manifest.json` → change `"version"` field
+2. **Create ZIP**: Select all extension files (exclude dev files)
+3. **Name ZIP**: `auto-approve-clicker-{version}.zip`
+4. **Exclude**: `.git`, `ROAD_MAP`, `*.ps1`, dev docs, etc.
 
 ## 📝 Development
 
