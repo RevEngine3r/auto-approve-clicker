@@ -1,9 +1,19 @@
 # ⚡ Auto-Approve Clicker
 
-> A Chrome extension that automatically clicks "Approve" buttons on user-specified URLs every 1 second.
+> A Chrome extension that automatically clicks "Approve" buttons on user-specified URLs every 1 second. **Specifically designed to automate annoying Approve requests in Perplexity's GitHub tool integration.**
 
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+## 💡 Primary Use Case
+
+**Perplexity GitHub Tool Automation**  
+This extension was created to solve a specific problem: When using Perplexity AI's GitHub tool integration, every action requires manual approval clicks. This extension automates those repetitive approvals, making your workflow seamless and efficient.
+
+Perfect for:
+- 🤖 Automating Perplexity's GitHub tool approval prompts
+- ⚡ Streamlining repetitive approval workflows
+- 🎯 Any website with recurring "Approve" button clicks
 
 ## 🌟 Features
 
@@ -18,7 +28,7 @@
 
 ## 🎯 Target Button
 
-The extension looks for buttons with this structure:
+The extension looks for buttons with this structure (like Perplexity's approval buttons):
 
 ```html
 <button class="bg-inverse text-inverse ...">
@@ -57,7 +67,23 @@ The extension looks for buttons with this structure:
 
 ## 🚀 Usage
 
-### Quick Start
+### Quick Start (Perplexity GitHub Tool)
+
+1. **Navigate to Perplexity**
+   - Go to perplexity.ai and start a conversation
+   - Use any GitHub-related commands that trigger approval prompts
+
+2. **Enable Auto-Clicking**
+   - Click the extension icon (⚡) in toolbar
+   - Click "▶️ Enable for This URL"
+   - Status will show "✅ Enabled"
+
+3. **Enjoy Automation**
+   - All Perplexity GitHub approval prompts will be automatically approved
+   - No more repetitive clicking required
+   - Console logs clicks for debugging
+
+### General Usage
 
 1. **Navigate to Target Page**
    - Go to any webpage where you want auto-clicking enabled
@@ -79,7 +105,7 @@ Access full settings via:
 - Or click "⚙️ Manage All URLs" in popup
 
 **Settings Features**:
-- **Add URLs**: Enter full or partial URLs (e.g., `example.com`)
+- **Add URLs**: Enter full or partial URLs (e.g., `perplexity.ai`, `example.com`)
 - **Remove URLs**: Click "Remove" next to any URL
 - **Clear All**: Remove all enabled URLs at once
 - **URL Counter**: See how many URLs are enabled
@@ -87,14 +113,13 @@ Access full settings via:
 ### URL Matching
 
 **Flexible Matching** - URLs use substring matching:
-- Enable `example.com` → Works on:
-  - `https://example.com`
-  - `https://example.com/page`
-  - `http://example.com/any/path`
-  - `https://subdomain.example.com` (also matches!)
+- Enable `perplexity.ai` → Works on:
+  - `https://perplexity.ai`
+  - `https://www.perplexity.ai/search`
+  - Any Perplexity page or subdomain
 
 **Best Practices**:
-- Use domain name only for entire site: `example.com`
+- Use domain name only for entire site: `perplexity.ai`
 - Use full path for specific pages: `example.com/specific-page`
 - Add protocol to be more specific: `https://example.com`
 
@@ -159,7 +184,7 @@ auto-approve-clicker/
 - [ ] Can remove individual URLs
 - [ ] Can clear all URLs with confirmation
 - [ ] Content script activates on enabled URLs
-- [ ] Button is detected and clicked
+- [ ] Button is detected and clicked (test with Perplexity GitHub approvals)
 - [ ] Auto-click stops when URL disabled
 - [ ] Works on SPA navigation (URL changes without reload)
 - [ ] Changes sync across multiple tabs
@@ -418,8 +443,9 @@ This extension is for educational and automation purposes. Use responsibly and e
 
 - Chrome Extensions Documentation
 - Manifest V3 Migration Guide
+- Perplexity AI for inspiring this automation solution
 - Community feedback and contributions
 
 ---
 
-**Made with ⚡ by RevEngine3r**
+**Made with ⚡ by RevEngine3r | Automate Your Perplexity GitHub Workflow**
