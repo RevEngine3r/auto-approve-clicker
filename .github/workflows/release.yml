@@ -1,0 +1,124 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#v}"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+
+      - name: Update manifest.json version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+          echo "Updated manifest.json to version $VERSION"
+
+      - name: Create release package
+        id: package
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="auto-approve-clicker-$VERSION.zip"
+          
+          # Create temporary directory for packaging
+          mkdir -p build-temp
+          
+          # Copy files excluding build artifacts and development files
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='ROAD_MAP' \
+            --exclude='releases' \
+            --exclude='build-temp' \
+            --exclude='PROGRESS.md' \
+            --exclude='PROJECT_MAP.md' \
+            --exclude='.gitignore' \
+            --exclude='.buildignore' \
+            --exclude='*.ps1' \
+            --exclude='*.bat' \
+            ./ build-temp/
+          
+          # Create ZIP from build-temp directory
+          cd build-temp
+          zip -r "../$ZIP_NAME" . -x "*.git*"
+          cd ..
+          
+          # Get file size
+          SIZE_BYTES=$(stat -f%z "$ZIP_NAME" 2>/dev/null || stat -c%s "$ZIP_NAME")
+          SIZE_KB=$(echo "scale=2; $SIZE_BYTES / 1024" | bc)
+          
+          echo "zip_path=$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "zip_size=${SIZE_KB}KB" >> $GITHUB_OUTPUT
+          echo "Created $ZIP_NAME (${SIZE_KB}KB)"
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NOTES=$(cat << EOF
+          ## Auto-Approve Clicker v$VERSION
+          
+          ### Installation
+          1. Download the \`auto-approve-clicker-$VERSION.zip\` file below
+          2. Extract the ZIP file to a folder
+          3. Open Chrome and navigate to \`chrome://extensions/\`
+          4. Enable "Developer mode" (toggle in top-right corner)
+          5. Click "Load unpacked"
+          6. Select the extracted folder
+          
+          ### Package Details
+          - **Version:** $VERSION
+          - **Package Size:** ${{ steps.package.outputs.zip_size }}
+          - **Build Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          ### What's Included
+          This release contains all necessary files for the Chrome extension:
+          - Extension manifest and scripts
+          - UI components (popup, options)
+          - Icons and assets
+          
+          For more information, see the [README](https://github.com/RevEngine3r/auto-approve-clicker#readme).
+          EOF
+          )
+          
+          # Write to file for multi-line output
+          echo "$NOTES" > release_notes.txt
+          echo "Release notes generated"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "Auto-Approve Clicker v${{ steps.version.outputs.version }}"
+          body_path: release_notes.txt
+          files: ${{ steps.package.outputs.zip_path }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-approve-clicker-${{ steps.version.outputs.version }}
+          path: ${{ steps.package.outputs.zip_path }}
+          retention-days: 30
