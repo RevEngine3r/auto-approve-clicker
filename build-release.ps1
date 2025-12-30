@@ -212,34 +212,54 @@ function Test-ShouldExclude {
         Check if file/folder should be excluded from build
     #>
     param(
-        [string]$Path,
-        [string[]]$Patterns
+        [string]$RelativePath,
+        [string[]]$CustomPatterns
     )
     
-    # Normalize path: remove leading ./ or .\ and convert to forward slashes
-    $relativePath = $Path.TrimStart('.').TrimStart('/').TrimStart('\').Replace('\', '/')
+    # Normalize: convert backslashes to forward slashes for consistent matching
+    $normalizedPath = $RelativePath.Replace('\', '/')
+    
+    # Get just the filename for direct file matching
+    $fileName = Split-Path -Leaf $normalizedPath
+    
+    # Get path components to check for directory matches
+    $pathParts = $normalizedPath -split '/'
     
     # Check default exclusions
     foreach ($exclusion in $Script:DefaultExclusions) {
-        # Normalize exclusion pattern
         $normalizedExclusion = $exclusion.Replace('\', '/')
         
         if ($normalizedExclusion.Contains('*')) {
-            # Wildcard pattern - use -like operator
-            if ($relativePath -like $normalizedExclusion) {
+            # Wildcard pattern - check against full path and filename
+            if ($normalizedPath -like $normalizedExclusion -or $fileName -like $normalizedExclusion) {
                 if ($VerboseOutput) {
-                    Write-Verbose "Excluded (wildcard): $relativePath (matched: $normalizedExclusion)"
+                    Write-Verbose "Excluded (wildcard): $normalizedPath (matched: $normalizedExclusion)"
                 }
                 return $true
             }
         }
         else {
-            # Exact match or directory match
-            # Match if path equals exclusion OR path starts with exclusion/
-            if ($relativePath -eq $normalizedExclusion -or 
-                $relativePath.StartsWith("$normalizedExclusion/")) {
+            # Check if any path component matches the exclusion (for directories)
+            if ($pathParts -contains $normalizedExclusion) {
                 if ($VerboseOutput) {
-                    Write-Verbose "Excluded (exact): $relativePath (matched: $normalizedExclusion)"
+                    Write-Verbose "Excluded (directory): $normalizedPath (matched: $normalizedExclusion)"
+                }
+                return $true
+            }
+            
+            # Check exact filename match
+            if ($fileName -eq $normalizedExclusion) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (filename): $normalizedPath (matched: $normalizedExclusion)"
+                }
+                return $true
+            }
+            
+            # Check if path starts with exclusion (for directories at root)
+            if ($normalizedPath -eq $normalizedExclusion -or 
+                $normalizedPath.StartsWith("$normalizedExclusion/")) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (path): $normalizedPath (matched: $normalizedExclusion)"
                 }
                 return $true
             }
@@ -247,24 +267,40 @@ function Test-ShouldExclude {
     }
     
     # Check .buildignore patterns
-    foreach ($pattern in $Patterns) {
+    foreach ($pattern in $CustomPatterns) {
         $normalizedPattern = $pattern.Replace('\', '/')
         
         if ($normalizedPattern.Contains('*')) {
             # Wildcard pattern
-            if ($relativePath -like $normalizedPattern) {
+            if ($normalizedPath -like $normalizedPattern -or $fileName -like $normalizedPattern) {
                 if ($VerboseOutput) {
-                    Write-Verbose "Excluded (buildignore wildcard): $relativePath (matched: $normalizedPattern)"
+                    Write-Verbose "Excluded (buildignore wildcard): $normalizedPath (matched: $normalizedPattern)"
                 }
                 return $true
             }
         }
         else {
-            # Exact match or directory match
-            if ($relativePath -eq $normalizedPattern -or 
-                $relativePath.StartsWith("$normalizedPattern/")) {
+            # Check if any path component matches
+            if ($pathParts -contains $normalizedPattern) {
                 if ($VerboseOutput) {
-                    Write-Verbose "Excluded (buildignore): $relativePath (matched: $normalizedPattern)"
+                    Write-Verbose "Excluded (buildignore directory): $normalizedPath (matched: $normalizedPattern)"
+                }
+                return $true
+            }
+            
+            # Check exact filename match
+            if ($fileName -eq $normalizedPattern) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (buildignore filename): $normalizedPath (matched: $normalizedPattern)"
+                }
+                return $true
+            }
+            
+            # Check path match
+            if ($normalizedPath -eq $normalizedPattern -or 
+                $normalizedPath.StartsWith("$normalizedPattern/")) {
+                if ($VerboseOutput) {
+                    Write-Verbose "Excluded (buildignore path): $normalizedPath (matched: $normalizedPattern)"
                 }
                 return $true
             }
@@ -301,7 +337,10 @@ function New-ReleasePackage {
             Write-Info "Removed existing: $zipFileName"
         }
         
-        # Get all files in current directory (recursively)
+        # Get current location for relative path calculation
+        $rootPath = (Get-Location).Path
+        
+        # Get all files recursively, including hidden files
         $allItems = Get-ChildItem -Path . -Recurse -Force -File
         $includedFiles = @()
         $excludedCount = 0
@@ -309,15 +348,20 @@ function New-ReleasePackage {
         Write-Info "Scanning files for packaging..."
         
         foreach ($item in $allItems) {
-            $relativePath = $item.FullName.Substring((Get-Location).Path.Length + 1)
+            # Calculate relative path from root
+            $relativePath = $item.FullName.Substring($rootPath.Length + 1)
             
             # Skip if excluded
-            if (Test-ShouldExclude -Path $relativePath -Patterns $CustomExclusions) {
+            if (Test-ShouldExclude -RelativePath $relativePath -CustomPatterns $CustomExclusions) {
                 $excludedCount++
                 continue
             }
             
-            $includedFiles += $item.FullName
+            $includedFiles += @{
+                FullPath = $item.FullName
+                RelativePath = $relativePath
+            }
+            
             if ($VerboseOutput) {
                 Write-Verbose "Included: $relativePath"
             }
@@ -335,11 +379,14 @@ function New-ReleasePackage {
         $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
         
         try {
-            foreach ($file in $includedFiles) {
-                $relativePath = $file.Substring((Get-Location).Path.Length + 1)
+            foreach ($fileInfo in $includedFiles) {
                 # Normalize path separators for ZIP (use forward slashes)
-                $entryName = $relativePath.Replace('\', '/')
-                [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file, $entryName) | Out-Null
+                $entryName = $fileInfo.RelativePath.Replace('\', '/')
+                [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+                    $zip, 
+                    $fileInfo.FullPath, 
+                    $entryName
+                ) | Out-Null
             }
         }
         finally {
