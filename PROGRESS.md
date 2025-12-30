@@ -7,7 +7,7 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 1. ✅ **Step 1**: Create GitHub repository and initialize PROJECT_MAP.md + PROGRESS.md
 2. ✅ **Step 2**: Create manifest.json with required permissions and extension metadata
 3. ✅ **Step 3**: Create content script (content.js) that checks and clicks the Approve button every 1 second
-4. ⏳ **Step 4**: Create background service worker (background.js) to manage URL permissions
+4. ✅ **Step 4**: Create background service worker (background.js) to manage URL permissions
 5. ⏳ **Step 5**: Create settings/options page (options.html + options.js) for enabling/disabling URLs
 6. ⏳ **Step 6**: Add popup UI (popup.html + popup.js) for quick enable/disable current tab
 7. ⏳ **Step 7**: Add icon assets and styling
@@ -92,20 +92,57 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 - **Storage**: Uses `chrome.storage.sync` for cross-device sync
 - **Message Protocol**: Supports `checkStatus` and `toggle` actions
 
-### Next Step
-Step 4: Create background.js service worker to manage URL permissions and coordinate between components
-
 ---
 
 ## Step 4: Create background.js
 
+### Status: ✅ COMPLETED
+
+### Actions Taken
+- Created background.js service worker (107 lines)
+- Implemented `onInstalled` listener: Initializes storage with empty `enabledUrls` array on first install
+- Implemented message handlers:
+  - `getEnabledUrls`: Retrieves current enabled URLs list
+  - `addUrl`: Adds URL to enabled list (prevents duplicates)
+  - `removeUrl`: Removes URL from enabled list
+  - `clearAllUrls`: Clears entire enabled URLs list
+  - `isUrlEnabled`: Checks if specific URL is enabled
+- Added storage change listener for debugging
+- All handlers return async responses properly
+
+### Key Decisions
+- **Storage Structure**: Simple array of URL strings in `enabledUrls`
+- **Duplicate Prevention**: `addUrl` checks for existing URLs before adding
+- **Async Handling**: All message handlers return `true` to keep channel open for async responses
+- **Update Handling**: Preserves existing data on extension updates
+- **Console Logging**: Comprehensive logging for debugging and monitoring
+
+### File Created
+- `background.js` (107 lines, clean service worker)
+
+### Message Protocol API
+- `getEnabledUrls` → `{ enabledUrls: [] }`
+- `addUrl` → `{ success: bool, enabledUrls: [], error?: string }`
+- `removeUrl` → `{ success: bool, enabledUrls: [], error?: string }`
+- `clearAllUrls` → `{ success: bool, enabledUrls: [] }`
+- `isUrlEnabled` → `{ isEnabled: bool }`
+
+### Next Step
+Step 5: Create options page (options.html + options.js) for managing enabled URLs list
+
+---
+
+## Step 5: Create options page
+
 ### Status: ⏳ PENDING
 
 ### Planned Actions
-- Set up service worker lifecycle
-- Initialize default storage structure
-- Handle installation and updates
-- Coordinate between content scripts, popup, and options page
-- Manage enabled URLs list
+- Create options.html with clean UI for URL management
+- Create options.js with:
+  - Load and display current enabled URLs
+  - Add new URL functionality
+  - Remove URL functionality
+  - Clear all URLs functionality
+- Style with modern CSS (consistent with extension design)
 
 ---
