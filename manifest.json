@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Auto-Approve Clicker",
-  "version": "1.0.0",
+  "version": "2025.12.30.1842",
   "description": "Automatically clicks Approve buttons on enabled URLs every 1 second",
   "permissions": [
     "storage",
@@ -30,8 +30,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ]

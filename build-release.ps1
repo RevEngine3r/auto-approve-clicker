@@ -54,7 +54,8 @@ $Script:DefaultExclusions = @(
     "PROJECT_MAP.md",
     ".gitignore",
     ".buildignore",
-    "*.ps1"
+    "*.ps1",
+	"*.bat"
 )
 
 #region Helper Functions
