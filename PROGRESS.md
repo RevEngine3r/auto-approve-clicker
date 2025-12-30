@@ -8,7 +8,7 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 2. ✅ **Step 2**: Create manifest.json with required permissions and extension metadata
 3. ✅ **Step 3**: Create content script (content.js) that checks and clicks the Approve button every 1 second
 4. ✅ **Step 4**: Create background service worker (background.js) to manage URL permissions
-5. ⏳ **Step 5**: Create settings/options page (options.html + options.js) for enabling/disabling URLs
+5. ✅ **Step 5**: Create settings/options page (options.html + options.js) for enabling/disabling URLs
 6. ⏳ **Step 6**: Add popup UI (popup.html + popup.js) for quick enable/disable current tab
 7. ⏳ **Step 7**: Add icon assets and styling
 8. ⏳ **Step 8**: Test and verify functionality, create comprehensive README
@@ -127,22 +127,72 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 - `clearAllUrls` → `{ success: bool, enabledUrls: [] }`
 - `isUrlEnabled` → `{ isEnabled: bool }`
 
-### Next Step
-Step 5: Create options page (options.html + options.js) for managing enabled URLs list
-
 ---
 
 ## Step 5: Create options page
 
+### Status: ✅ COMPLETED
+
+### Actions Taken
+- Created options.html (224 lines) with modern, responsive UI
+- Created options.js (164 lines) with full URL management functionality
+
+### HTML Features
+- **Header**: Gradient background with extension name and description
+- **Add URL Section**: Input field + Add button with helpful tip
+- **URL List Section**: Dynamic list with remove buttons, empty state
+- **Clear All Section**: Danger button to clear all URLs (with confirmation)
+- **Footer**: Brief explanation of extension behavior
+- **Message System**: Success/error notifications with auto-hide
+- **URL Counter**: Badge showing number of enabled URLs
+
+### JavaScript Functions
+- `loadUrls()`: Fetches enabled URLs from storage on page load
+- `renderUrlList()`: Dynamically renders URL list with remove buttons
+- `addUrl()`: Adds new URL with validation (min 3 chars)
+- `removeUrl()`: Removes specific URL from list
+- `clearAllUrls()`: Clears all URLs with confirmation dialog
+- `showMessage()`: Displays success/error messages with auto-hide
+- `escapeHtml()`: Prevents XSS in displayed URLs
+- Storage change listener: Auto-updates UI when storage changes elsewhere
+
+### Styling Highlights
+- Modern gradient design (purple theme matching extension aesthetic)
+- Responsive layout (max-width 700px, centered)
+- Smooth transitions and hover effects
+- Clean typography with system fonts
+- Empty state with icon and helpful text
+- Color-coded buttons (primary, danger)
+- Input focus states
+
+### Key Decisions
+- **Validation**: Minimum 3 characters for URL
+- **Confirmation**: Required for clearing all URLs
+- **Real-time Sync**: Listens to storage changes for multi-tab consistency
+- **Enter Key**: Submits form when pressed in input field
+- **XSS Protection**: HTML escaping for all user-provided URLs
+- **User Feedback**: 3-second auto-hide messages
+
+### Files Created
+- `options/options.html` (224 lines)
+- `options/options.js` (164 lines)
+
+### Next Step
+Step 6: Create popup UI (popup.html + popup.js) for quick enable/disable of current tab
+
+---
+
+## Step 6: Create popup UI
+
 ### Status: ⏳ PENDING
 
 ### Planned Actions
-- Create options.html with clean UI for URL management
-- Create options.js with:
-  - Load and display current enabled URLs
-  - Add new URL functionality
-  - Remove URL functionality
-  - Clear all URLs functionality
-- Style with modern CSS (consistent with extension design)
+- Create popup.html with compact UI (extension popup style)
+- Create popup.js with:
+  - Get current tab URL
+  - Display current status (enabled/disabled)
+  - Toggle button for quick enable/disable
+  - Link to options page
+- Match styling with options page (consistent theme)
 
 ---
