@@ -3,8 +3,8 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*.*.*'
-      - 'v*.*.*.*'
+      - 'release'
+      - 'release-*'
 
 permissions:
   contents: write
@@ -19,68 +19,55 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract version from tag
+      - name: Install PowerShell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y powershell
+          pwsh --version
+
+      - name: Run build-release.ps1
+        run: |
+          pwsh -File ./build-release.ps1 -VerboseOutput
+        continue-on-error: false
+
+      - name: Extract version from manifest
         id: version
         run: |
-          TAG_NAME="${GITHUB_REF#refs/tags/}"
-          VERSION="${TAG_NAME#v}"
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          VERSION=$(jq -r '.version' manifest.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Release version: $VERSION"
 
-      - name: Update manifest.json version
+      - name: Find release ZIP
+        id: find_zip
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.json.tmp
-          mv manifest.json.tmp manifest.json
-          echo "Updated manifest.json to version $VERSION"
-
-      - name: Create release package
-        id: package
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          ZIP_NAME="auto-approve-clicker-$VERSION.zip"
+          ZIP_PATH=$(find releases -name "auto-approve-clicker-*.zip" -type f | head -n 1)
+          ZIP_NAME=$(basename "$ZIP_PATH")
           
-          # Create temporary directory for packaging
-          mkdir -p build-temp
+          if [ -z "$ZIP_PATH" ]; then
+            echo "Error: No release ZIP found!"
+            exit 1
+          fi
           
-          # Copy files excluding build artifacts and development files
-          rsync -av \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='ROAD_MAP' \
-            --exclude='releases' \
-            --exclude='build-temp' \
-            --exclude='PROGRESS.md' \
-            --exclude='PROJECT_MAP.md' \
-            --exclude='.gitignore' \
-            --exclude='.buildignore' \
-            --exclude='*.ps1' \
-            --exclude='*.bat' \
-            ./ build-temp/
-          
-          # Create ZIP from build-temp directory
-          cd build-temp
-          zip -r "../$ZIP_NAME" . -x "*.git*"
-          cd ..
-          
-          # Get file size
-          SIZE_BYTES=$(stat -f%z "$ZIP_NAME" 2>/dev/null || stat -c%s "$ZIP_NAME")
+          SIZE_BYTES=$(stat -c%s "$ZIP_PATH")
           SIZE_KB=$(echo "scale=2; $SIZE_BYTES / 1024" | bc)
           
-          echo "zip_path=$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "zip_path=$ZIP_PATH" >> $GITHUB_OUTPUT
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
           echo "zip_size=${SIZE_KB}KB" >> $GITHUB_OUTPUT
-          echo "Created $ZIP_NAME (${SIZE_KB}KB)"
+          echo "Found: $ZIP_NAME (${SIZE_KB}KB)"
 
       - name: Generate release notes
         id: release_notes
         run: |
           VERSION="${{ steps.version.outputs.version }}"
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
           NOTES=$(cat << EOF
           ## Auto-Approve Clicker v$VERSION
           
+          **Auto-generated release** from tag: \`$TAG_NAME\`
+          
           ### Installation
-          1. Download the \`auto-approve-clicker-$VERSION.zip\` file below
+          1. Download the \`${{ steps.find_zip.outputs.zip_name }}\` file below
           2. Extract the ZIP file to a folder
           3. Open Chrome and navigate to \`chrome://extensions/\`
           4. Enable "Developer mode" (toggle in top-right corner)
@@ -88,9 +75,10 @@ jobs:
           6. Select the extracted folder
           
           ### Package Details
-          - **Version:** $VERSION
-          - **Package Size:** ${{ steps.package.outputs.zip_size }}
+          - **Version:** $VERSION (auto-generated from datetime)
+          - **Package Size:** ${{ steps.find_zip.outputs.zip_size }}
           - **Build Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          - **Trigger Tag:** \`$TAG_NAME\`
           
           ### What's Included
           This release contains all necessary files for the Chrome extension:
@@ -102,23 +90,36 @@ jobs:
           EOF
           )
           
-          # Write to file for multi-line output
           echo "$NOTES" > release_notes.txt
           echo "Release notes generated"
 
+      - name: Delete existing tag/release (if exists)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          
+          # Delete release if exists
+          gh release delete "$TAG_NAME" -y 2>/dev/null || true
+          
+          echo "Cleaned up any existing release for $TAG_NAME"
+
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: "Auto-Approve Clicker v${{ steps.version.outputs.version }}"
-          body_path: release_notes.txt
-          files: ${{ steps.package.outputs.zip_path }}
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          
+          gh release create "$TAG_NAME" \
+            --title "Auto-Approve Clicker v$VERSION" \
+            --notes-file release_notes.txt \
+            "${{ steps.find_zip.outputs.zip_path }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: auto-approve-clicker-${{ steps.version.outputs.version }}
-          path: ${{ steps.package.outputs.zip_path }}
-          retention-days: 30
+          path: ${{ steps.find_zip.outputs.zip_path }}
+          retention-days: 90
