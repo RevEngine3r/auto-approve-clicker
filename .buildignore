@@ -1,0 +1,23 @@
+# .buildignore - Custom Build Exclusions
+# Lines starting with # are comments
+# Add files/folders to exclude from release builds (one per line)
+# Supports wildcards (*)
+#
+# Default exclusions (built into script, don't need to add here):
+#   .git/
+#   .github/
+#   ROAD_MAP/
+#   releases/
+#   PROGRESS.md
+#   PROJECT_MAP.md
+#   .gitignore
+#   .buildignore
+#   *.ps1
+#
+# Examples:
+#   test/
+#   *.log
+#   temp*.txt
+#   notes.md
+
+# Add your custom exclusions below:
