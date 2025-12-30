@@ -13,10 +13,14 @@ function findAndClickApproveButton() {
   const buttons = document.querySelectorAll('button.bg-inverse.text-inverse');
   
   for (const button of buttons) {
-    // Check if button contains "Approve" text (case-insensitive)
-    const buttonText = button.textContent.trim();
-    if (buttonText.toLowerCase().includes('approve')) {
+    // Check if button or its children contain "Approve" text (case-insensitive)
+    // Use innerText instead of textContent for better text extraction
+    const buttonText = button.innerText || button.textContent || '';
+    const normalizedText = buttonText.trim().toLowerCase();
+    
+    if (normalizedText.includes('approve')) {
       // Button found - click it
+      console.log('[Auto-Approve] Found button with text:', buttonText);
       button.click();
       console.log('[Auto-Approve] Clicked Approve button');
       return true;
@@ -27,7 +31,7 @@ function findAndClickApproveButton() {
 }
 
 /**
- * Starts the auto-click interval (1 second)
+ * Starts the auto-click interval (500ms for faster detection)
  */
 function startAutoClick() {
   if (clickInterval) {
@@ -39,10 +43,13 @@ function startAutoClick() {
   // Check immediately on start
   findAndClickApproveButton();
   
-  // Then check every 1 second
+  // Then check every 500ms (faster response)
   clickInterval = setInterval(() => {
-    findAndClickApproveButton();
-  }, 1000);
+    const clicked = findAndClickApproveButton();
+    if (clicked) {
+      console.log('[Auto-Approve] Button clicked at:', new Date().toISOString());
+    }
+  }, 500);
   
   isEnabled = true;
 }
@@ -71,6 +78,12 @@ function checkUrlEnabled() {
     // Check if current URL is in enabled list
     const shouldEnable = enabledUrls.some(url => currentUrl.includes(url));
     
+    console.log('[Auto-Approve] URL check:', {
+      currentUrl,
+      enabledUrls,
+      shouldEnable
+    });
+    
     if (shouldEnable && !isEnabled) {
       startAutoClick();
     } else if (!shouldEnable && isEnabled) {
@@ -80,7 +93,10 @@ function checkUrlEnabled() {
 }
 
 // Initial check on page load
-checkUrlEnabled();
+console.log('[Auto-Approve] Content script loaded');
+setTimeout(() => {
+  checkUrlEnabled();
+}, 1000); // Wait 1 second for page to fully load
 
 // Listen for URL changes (SPA navigation)
 let lastUrl = window.location.href;
@@ -102,12 +118,15 @@ urlObserver.observe(document.body, {
 // Listen for storage changes (when user enables/disables URLs)
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.enabledUrls) {
+    console.log('[Auto-Approve] Storage changed:', changes.enabledUrls);
     checkUrlEnabled();
   }
 });
 
 // Listen for messages from popup/background
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('[Auto-Approve] Received message:', message);
+  
   if (message.action === 'checkStatus') {
     sendResponse({ isEnabled: isEnabled });
   } else if (message.action === 'toggle') {
