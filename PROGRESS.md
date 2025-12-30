@@ -9,7 +9,7 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 3. ✅ **Step 3**: Create content script (content.js) that checks and clicks the Approve button every 1 second
 4. ✅ **Step 4**: Create background service worker (background.js) to manage URL permissions
 5. ✅ **Step 5**: Create settings/options page (options.html + options.js) for enabling/disabling URLs
-6. ⏳ **Step 6**: Add popup UI (popup.html + popup.js) for quick enable/disable current tab
+6. ✅ **Step 6**: Add popup UI (popup.html + popup.js) for quick enable/disable current tab
 7. ⏳ **Step 7**: Add icon assets and styling
 8. ⏳ **Step 8**: Test and verify functionality, create comprehensive README
 9. ⏳ **Step 9**: Create PR and finalize
@@ -177,22 +177,76 @@ Build a Chrome extension that automatically clicks "Approve" buttons on user-spe
 - `options/options.html` (224 lines)
 - `options/options.js` (164 lines)
 
-### Next Step
-Step 6: Create popup UI (popup.html + popup.js) for quick enable/disable of current tab
-
 ---
 
 ## Step 6: Create popup UI
 
+### Status: ✅ COMPLETED
+
+### Actions Taken
+- Created popup.html (184 lines) with compact popup interface
+- Created popup.js (156 lines) with quick toggle functionality
+
+### HTML Features
+- **Compact Design**: 320px width, optimized for popup
+- **Header**: Gradient background matching options page theme
+- **URL Display**: Shows current page URL in clean format
+- **Status Card**: Visual indicator (enabled/disabled) with icon and description
+- **Toggle Button**: Large, prominent button to enable/disable current URL
+- **Settings Button**: Quick link to full options page
+- **Loading State**: Spinner animation while initializing
+- **Error State**: Helpful message for restricted pages (chrome://, etc.)
+- **Info Text**: Brief explanation of extension behavior
+
+### JavaScript Functions
+- `init()`: Initializes popup, gets current tab, checks status
+- `getCurrentTab()`: Retrieves active tab information
+- `checkUrlStatus()`: Checks if current URL is in enabled list
+- `updateUI()`: Updates all UI elements based on enabled status
+- `toggleUrl()`: Adds or removes URL from enabled list
+- `openSettings()`: Opens options page
+- `simplifyUrl()`: Removes protocol and cleans URL for display
+- Storage change listener: Updates UI when list changes elsewhere
+
+### UI States
+- **Loading**: Spinner + "Loading..." text
+- **Enabled**: Green card, ✅ icon, "Disable" button (red gradient)
+- **Disabled**: Red card, ⭕ icon, "Enable" button (purple gradient)
+- **Error**: Warning icon + helpful message for restricted pages
+
+### Styling Highlights
+- Consistent purple gradient theme with options page
+- Color-coded status cards (green enabled, red disabled)
+- Smooth transitions and hover effects
+- Loading spinner animation
+- Button disabled state during toggle operation
+- Clean, compact layout for popup constraints
+
+### Key Decisions
+- **URL Simplification**: Removes https://, trailing slashes for cleaner display
+- **Button Disable**: Prevents double-clicks during toggle operation
+- **Error Handling**: Graceful fallback for chrome:// and other restricted pages
+- **Real-time Sync**: Storage listener keeps popup updated
+- **Quick Access**: Settings button for power users
+
+### Files Created
+- `popup/popup.html` (184 lines)
+- `popup/popup.js` (156 lines)
+
+### Next Step
+Step 7: Add icon assets (16px, 48px, 128px) for extension branding
+
+---
+
+## Step 7: Add icon assets
+
 ### Status: ⏳ PENDING
 
 ### Planned Actions
-- Create popup.html with compact UI (extension popup style)
-- Create popup.js with:
-  - Get current tab URL
-  - Display current status (enabled/disabled)
-  - Toggle button for quick enable/disable
-  - Link to options page
-- Match styling with options page (consistent theme)
+- Generate/create 16x16px icon for toolbar
+- Generate/create 48x48px icon for extension management
+- Generate/create 128x128px icon for Chrome Web Store
+- Place in icons/ folder
+- Ensure consistent branding with purple/lightning theme
 
 ---

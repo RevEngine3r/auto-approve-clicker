@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto-Approve Clicker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .container {
+      background: white;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .url-display {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .url-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .url-text {
+      font-size: 13px;
+      color: #333;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .status-card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+    }
+
+    .status-card.enabled {
+      background: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    .status-card.disabled {
+      background: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
+    .status-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .status-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .status-description {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .toggle-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .toggle-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .toggle-btn:active {
+      transform: translateY(0);
+    }
+
+    .toggle-btn.enabled {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .settings-btn {
+      width: 100%;
+      padding: 12px;
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .settings-btn:hover {
+      background: #d0d0d0;
+      transform: translateY(-1px);
+    }
+
+    .settings-btn:active {
+      transform: translateY(0);
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ Auto-Approve Clicker</h1>
+      <p>Quick Toggle</p>
+    </div>
+
+    <div class="content">
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+
+      <div id="main" style="display: none;">
+        <div class="url-display">
+          <div class="url-label">Current Page</div>
+          <div id="currentUrl" class="url-text"></div>
+        </div>
+
+        <div id="statusCard" class="status-card">
+          <div class="status-icon" id="statusIcon">⚪</div>
+          <div class="status-text" id="statusText">Unknown</div>
+          <div class="status-description" id="statusDescription"></div>
+        </div>
+
+        <button id="toggleBtn" class="toggle-btn">Toggle</button>
+        <button id="settingsBtn" class="settings-btn">⚙️ Manage All URLs</button>
+
+        <div class="info-text">
+          💡 Extension auto-clicks "Approve" buttons every 1 second when enabled
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
