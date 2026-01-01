@@ -1,8 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Auto-Approve Clicker",
-  "version": "2025.12.30.1852",
+  "version": "2026.1.1.2202",
   "description": "Automatically clicks Approve buttons on manually enabled pages",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "auto-approve-clicker@revengine3r.ir",
+      "strict_min_version": "109.0"
+    }
+  },
   "permissions": [
     "storage",
     "activeTab",
@@ -22,12 +28,21 @@
     "128": "icons/icon128.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "scripts": [
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["utils/logger.js", "ui/viewer.js", "content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "utils/logger.js",
+        "ui/viewer.js",
+        "content.js"
+      ],
       "run_at": "document_end"
     }
   ],
