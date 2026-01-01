@@ -15,6 +15,15 @@ const Log = window.AutoApproveLogger || {
 };
 
 /**
+ * Notify viewer about extension state
+ */
+function notifyViewerState(enabled) {
+  const eventName = enabled ? 'aac-extension-enabled' : 'aac-extension-disabled';
+  window.dispatchEvent(new CustomEvent(eventName));
+  Log.info(`📢 Dispatched ${eventName} event`);
+}
+
+/**
  * Finds and clicks the Approve button if present
  * Target: button with classes 'bg-inverse' and 'text-inverse' containing 'Approve' text
  */
@@ -75,6 +84,7 @@ function startAutoClick() {
   }, 500);
   
   isEnabled = true;
+  notifyViewerState(true);
   Log.success('✅ Interval started successfully');
 }
 
@@ -86,10 +96,12 @@ function stopAutoClick() {
     clearInterval(clickInterval);
     clickInterval = null;
     isEnabled = false;
+    notifyViewerState(false);
     Log.warn('⏹️ DISABLED - Stopped auto-click');
     Log.info(`📊 Total checks performed: ${checkCount}`);
   } else {
     Log.info('🚫 Not running, nothing to stop');
+    notifyViewerState(false);
   }
 }
 
@@ -123,6 +135,7 @@ function checkUrlEnabled() {
       Log.info('✅ Already running for this URL');
     } else {
       Log.info('⏸️ Extension inactive for this URL');
+      notifyViewerState(false);
     }
   });
 }
