@@ -383,7 +383,7 @@ class LogViewer {
             /* Floating toggle button */
             .aac-btn {
                 position: fixed !important;
-                bottom: 20px !important;
+                bottom: 50px !important;
                 right: 20px !important;
                 width: 56px !important;
                 height: 56px !important;
@@ -428,7 +428,7 @@ class LogViewer {
             /* Log panel - starts with pointer-events none, only enabled when visible */
             .aac-panel {
                 position: fixed !important;
-                bottom: 90px !important;
+                bottom: 120px !important;
                 right: 20px !important;
                 width: 420px !important;
                 max-width: calc(100vw - 40px) !important;
