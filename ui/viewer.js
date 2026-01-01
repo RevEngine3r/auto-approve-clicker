@@ -367,6 +367,18 @@ class LogViewer {
                 margin: 0;
                 padding: 0;
             }
+            
+            /* Container - ensure it doesn't block interaction with the page */
+            #aac-log-viewer {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                overflow: visible !important;
+                z-index: 2147483647 !important;
+                pointer-events: none !important;
+            }
 
             /* Floating toggle button */
             .aac-btn {
@@ -386,6 +398,7 @@ class LogViewer {
                 justify-content: center !important;
                 z-index: 999998 !important;
                 transition: transform 0.2s, box-shadow 0.2s !important;
+                pointer-events: auto !important; /* Re-enable pointer events for button */
             }
 
             .aac-btn:hover {
@@ -428,13 +441,13 @@ class LogViewer {
                 z-index: 999999 !important;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
                 transition: opacity 0.3s, transform 0.3s !important;
-                pointer-events: auto !important;
+                pointer-events: auto !important; /* Re-enable pointer events for panel */
             }
 
             .aac-panel.aac-hidden {
                 opacity: 0 !important;
                 transform: translateY(20px) !important;
-                pointer-events: none !important;
+                pointer-events: none !important; /* Disable events when hidden */
             }
 
             /* Panel header */
