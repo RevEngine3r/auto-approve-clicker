@@ -5,6 +5,15 @@ let clickInterval = null;
 let isEnabled = false;
 let checkCount = 0; // Track number of checks performed
 
+// Use the injected Logger class or fallback to console if something went wrong
+const Log = window.AutoApproveLogger || {
+  log: console.log,
+  success: console.log,
+  info: console.log,
+  warn: console.warn,
+  error: console.error
+};
+
 /**
  * Finds and clicks the Approve button if present
  * Target: button with classes 'bg-inverse' and 'text-inverse' containing 'Approve' text
@@ -17,7 +26,7 @@ function findAndClickApproveButton() {
   
   // Log every 10 checks to show it's working without spamming console
   if (checkCount % 10 === 0) {
-    console.log(`[Auto-Approve] 🔍 Checking for buttons... (Check #${checkCount})`);
+    Log.info(`🔍 Checking for buttons... (Check #${checkCount})`);
   }
   
   for (const button of buttons) {
@@ -28,9 +37,9 @@ function findAndClickApproveButton() {
     
     if (normalizedText.includes('approve')) {
       // Button found - click it
-      console.log('[Auto-Approve] ✅ Found button with text:', buttonText);
+      Log.success('✅ Found button with text:', buttonText);
       button.click();
-      console.log('[Auto-Approve] 👆 Clicked Approve button at:', new Date().toLocaleTimeString());
+      Log.success('👆 Clicked Approve button');
       return true;
     }
   }
@@ -43,21 +52,21 @@ function findAndClickApproveButton() {
  */
 function startAutoClick() {
   if (clickInterval) {
-    console.log('[Auto-Approve] ⚠️ Already running, skipping start');
+    Log.warn('⚠️ Already running, skipping start');
     return; // Already running
   }
   
-  console.log('%c[Auto-Approve] ▶️ ENABLED - Starting auto-click', 'color: #00ff00; font-weight: bold; font-size: 14px');
-  console.log('[Auto-Approve] 🎯 Target URL:', window.location.href);
-  console.log('[Auto-Approve] ⏱️ Checking every 500ms (0.5 seconds)');
+  Log.success('▶️ ENABLED - Starting auto-click');
+  Log.info('🎯 Target URL:', window.location.href);
+  Log.info('⏱️ Checking every 500ms (0.5 seconds)');
   
   checkCount = 0; // Reset counter
   
   // Check immediately on start
-  console.log('[Auto-Approve] 🔍 Performing initial check...');
+  Log.info('🔍 Performing initial check...');
   const foundInitially = findAndClickApproveButton();
   if (!foundInitially) {
-    console.log('[Auto-Approve] 🔍 No Approve button found on initial check, will keep checking...');
+    Log.info('🔍 No Approve button found on initial check, will keep checking...');
   }
   
   // Then check every 500ms (faster response)
@@ -66,7 +75,7 @@ function startAutoClick() {
   }, 500);
   
   isEnabled = true;
-  console.log('[Auto-Approve] ✅ Interval started successfully');
+  Log.success('✅ Interval started successfully');
 }
 
 /**
@@ -77,10 +86,10 @@ function stopAutoClick() {
     clearInterval(clickInterval);
     clickInterval = null;
     isEnabled = false;
-    console.log('%c[Auto-Approve] ⏹️ DISABLED - Stopped auto-click', 'color: #ff0000; font-weight: bold; font-size: 14px');
-    console.log(`[Auto-Approve] 📊 Total checks performed: ${checkCount}`);
+    Log.warn('⏹️ DISABLED - Stopped auto-click');
+    Log.info(`📊 Total checks performed: ${checkCount}`);
   } else {
-    console.log('[Auto-Approve] 🚫 Not running, nothing to stop');
+    Log.info('🚫 Not running, nothing to stop');
   }
 }
 
@@ -90,7 +99,7 @@ function stopAutoClick() {
 function checkUrlEnabled() {
   const currentUrl = window.location.href;
   
-  console.log('[Auto-Approve] 🔍 Checking if URL is enabled...');
+  Log.info('🔍 Checking if URL is enabled...');
   
   chrome.storage.sync.get(['enabledUrls'], (result) => {
     const enabledUrls = result.enabledUrls || [];
@@ -98,34 +107,33 @@ function checkUrlEnabled() {
     // Check if current URL is in enabled list
     const shouldEnable = enabledUrls.some(url => currentUrl.includes(url));
     
-    console.log('[Auto-Approve] 📋 URL Check Results:', {
+    Log.info('📋 URL Check Results:', {
       currentUrl: currentUrl,
-      enabledUrls: enabledUrls,
       shouldEnable: shouldEnable ? '✅ YES' : '❌ NO',
       currentStatus: isEnabled ? 'Running' : 'Stopped'
     });
     
     if (shouldEnable && !isEnabled) {
-      console.log('[Auto-Approve] ✅ URL is enabled, starting auto-click...');
+      Log.success('✅ URL is enabled, starting auto-click...');
       startAutoClick();
     } else if (!shouldEnable && isEnabled) {
-      console.log('[Auto-Approve] ❌ URL not enabled, stopping auto-click...');
+      Log.warn('❌ URL not enabled, stopping auto-click...');
       stopAutoClick();
     } else if (shouldEnable && isEnabled) {
-      console.log('[Auto-Approve] ✅ Already running for this URL');
+      Log.info('✅ Already running for this URL');
     } else {
-      console.log('[Auto-Approve] ⏸️ Extension inactive for this URL');
+      Log.info('⏸️ Extension inactive for this URL');
     }
   });
 }
 
 // Initial check on page load
-console.log('%c[Auto-Approve] 🚀 Content script loaded', 'color: #00aaff; font-weight: bold; font-size: 14px');
-console.log('[Auto-Approve] 🌍 Page:', window.location.href);
-console.log('[Auto-Approve] ⏳ Waiting 1 second for page to fully load...');
+Log.success('🚀 Content script loaded');
+Log.info('🌍 Page:', window.location.href);
+Log.info('⏳ Waiting 1 second for page to fully load...');
 
 setTimeout(() => {
-  console.log('[Auto-Approve] ✅ Page loaded, checking URL status...');
+  Log.info('✅ Page loaded, checking URL status...');
   checkUrlEnabled();
 }, 1000); // Wait 1 second for page to fully load
 
@@ -134,9 +142,9 @@ let lastUrl = window.location.href;
 const urlObserver = new MutationObserver(() => {
   const currentUrl = window.location.href;
   if (currentUrl !== lastUrl) {
-    console.log('[Auto-Approve] 🔄 URL changed detected');
-    console.log('[Auto-Approve] Old URL:', lastUrl);
-    console.log('[Auto-Approve] New URL:', currentUrl);
+    Log.info('🔄 URL changed detected');
+    Log.info('Old URL:', lastUrl);
+    Log.info('New URL:', currentUrl);
     lastUrl = currentUrl;
     stopAutoClick();
     checkUrlEnabled();
@@ -152,27 +160,25 @@ urlObserver.observe(document.body, {
 // Listen for storage changes (when user enables/disables URLs)
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.enabledUrls) {
-    console.log('[Auto-Approve] 📦 Storage changed - enabled URLs updated');
-    console.log('[Auto-Approve] Old value:', changes.enabledUrls.oldValue);
-    console.log('[Auto-Approve] New value:', changes.enabledUrls.newValue);
+    Log.info('📦 Storage changed - enabled URLs updated');
     checkUrlEnabled();
   }
 });
 
 // Listen for messages from popup/background
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('[Auto-Approve] 📨 Received message:', message);
+  Log.info('📨 Received message:', message);
   
   if (message.action === 'checkStatus') {
-    console.log('[Auto-Approve] 📊 Status check requested, current status:', isEnabled ? 'Enabled' : 'Disabled');
+    Log.info('📊 Status check requested, current status:', isEnabled ? 'Enabled' : 'Disabled');
     sendResponse({ isEnabled: isEnabled });
   } else if (message.action === 'toggle') {
-    console.log('[Auto-Approve] 🔄 Toggle requested');
+    Log.info('🔄 Toggle requested');
     if (isEnabled) {
-      console.log('[Auto-Approve] Currently enabled, stopping...');
+      Log.info('Currently enabled, stopping...');
       stopAutoClick();
     } else {
-      console.log('[Auto-Approve] Currently disabled, starting...');
+      Log.info('Currently disabled, starting...');
       startAutoClick();
     }
     sendResponse({ isEnabled: isEnabled });
@@ -182,8 +188,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
-  console.log('[Auto-Approve] 👋 Page unloading, cleaning up...');
+  Log.info('👋 Page unloading, cleaning up...');
   stopAutoClick();
 });
 
-console.log('[Auto-Approve] ✅ All event listeners registered');
+Log.success('✅ All event listeners registered');
