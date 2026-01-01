@@ -462,7 +462,7 @@ This extension is for educational and automation purposes. Use responsibly and e
 
 ---
 
-**Made with ⚡ by RevEngine3r | Automate Your Perplexity GitHub Workflow**
+**Made with ⚡ by RevEngine3r**
 
 ---
 

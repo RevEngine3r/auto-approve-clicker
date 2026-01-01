@@ -1,34 +1,36 @@
-# ⚡ Auto-Approve Clicker
+## ترجمه کامل README به فارسی[1]
 
-> A Chrome extension that automatically clicks "Approve" buttons on user-specified URLs every 1 second. **Specifically designed to automate annoying Approve requests in Perplexity's GitHub tool integration.**
+# ⚡ کلیکر Auto-Approve
 
-[![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+> یک افزونه کروم که هر ۱ ثانیه یک‌بار، به‌صورت خودکار روی دکمه‌های «Approve» در آدرس‌های دلخواه شما کلیک می‌کند. **به‌طور خاص برای خودکار کردن درخواست‌های تأیید خسته‌کننده در یکپارچه‌سازی GitHub ابزار Perplexity طراحی شده است.**[1]
 
-## 💡 Primary Use Case
+[Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/)  
+[لایسنس: MIT](LICENSE)[1]
 
-**Perplexity GitHub Tool Automation**  
-This extension was created to solve a specific problem: When using Perplexity AI's GitHub tool integration, every action requires manual approval clicks. This extension automates those repetitive approvals, making your workflow seamless and efficient.
+## 💡 مورد استفاده اصلی[1]
 
-Perfect for:
-- 🤖 Automating Perplexity's GitHub tool approval prompts
-- ⚡ Streamlining repetitive approval workflows
-- 🎯 Any website with recurring "Approve" button clicks
+**خودکارسازی ابزار GitHub پرپلکسیتی**[1]
+این افزونه برای حل یک مشکل مشخص ساخته شده است: هنگام استفاده از یکپارچه‌سازی ابزار GitHub در Perplexity AI، هر عمل نیاز به کلیک دستی روی تأیید (Approve) دارد. این افزونه این تأییدهای تکراری را خودکار می‌کند و جریان کاری شما را روان و کارآمد می‌سازد.[1]
 
-## 🌟 Features
+مناسب برای:[1]
+- 🤖 خودکار کردن پیام‌های تأیید ابزار GitHub در Perplexity  
+- ⚡ روان‌سازی جریان‌های کاری تکراری تأیید  
+- 🎯 هر وب‌سایتی که دکمه «Approve» تکرارشونده دارد[1]
 
-- **Automatic Clicking**: Finds and clicks "Approve" buttons every 1 second on enabled URLs
-- **Per-URL Control**: Manually enable/disable extension for each URL individually
-- **Smart Detection**: Targets buttons with specific classes and "Approve" text (case-insensitive)
-- **Modern UI**: Beautiful gradient design with intuitive settings page
-- **Quick Toggle**: Popup interface for fast enable/disable on current tab
-- **SPA Support**: Detects URL changes in single-page applications
-- **Real-time Sync**: Changes sync instantly across all tabs and windows
-- **No Background Drain**: Only runs on enabled URLs, minimal resource usage
+## 🌟 ویژگی‌ها[1]
 
-## 🎯 Target Button
+- **کلیک خودکار**: هر ۱ ثانیه، دکمه‌های «Approve» را در آدرس‌های فعال پیدا کرده و کلیک می‌کند[1]
+- **کنترل بر اساس هر URL**: برای هر آدرس، به‌صورت جداگانه فعال/غیرفعال می‌شود[1]
+- **تشخیص هوشمند**: دکمه‌هایی با کلاس‌ها و متن «Approve» (بدون حساسیت به حروف بزرگ/کوچک) را هدف می‌گیرد[1]
+- **رابط کاربری مدرن**: طراحی گرادیانی زیبا با صفحه تنظیمات شهودی[1]
+- **سوییچ سریع**: پاپ‌آپ برای فعال/غیرفعال‌سازی سریع روی تب فعلی[1]
+- **پشتیبانی SPA**: تشخیص تغییر URL در Single-Page Application ها[1]
+- **همگام‌سازی لحظه‌ای**: تغییرات در همه تب‌ها و پنجره‌ها بلافاصله همگام می‌شود[1]
+- **مصرف کم منابع**: فقط روی URLهای فعال اجرا می‌شود و حداقل استفاده از منابع را دارد[1]
 
-The extension looks for buttons with this structure (like Perplexity's approval buttons):
+## 🎯 دکمه هدف[1]
+
+افزونه به‌دنبال دکمه‌هایی با ساختار زیر است (مثل دکمه‌های تأیید Perplexity):[1]
 
 ```html
 <button class="bg-inverse text-inverse ...">
@@ -38,414 +40,420 @@ The extension looks for buttons with this structure (like Perplexity's approval 
 </button>
 ```
 
-**Selection Criteria**:
-- Button element with classes `bg-inverse` AND `text-inverse`
-- Contains text "Approve" (case-insensitive)
-- Clicks once found, every 1 second
+**معیارهای انتخاب**:[1]
+- المنت دکمه با کلاس‌های `bg-inverse` و `text-inverse`  
+- شامل متن «Approve» (بدون حساسیت به حروف بزرگ/کوچک)  
+- پس از پیدا شدن، هر ۱ ثانیه یک‌بار کلیک می‌شود[1]
 
-## 📦 Installation
+## 📦 نصب[1]
 
-### Install from Source (Developer Mode)
+### نصب از سورس (حالت توسعه‌دهنده)[1]
 
-1. **Download the Extension**
+1. **دانلود افزونه**[1]
    ```bash
    git clone https://github.com/RevEngine3r/auto-approve-clicker.git
    cd auto-approve-clicker
    ```
 
-2. **Open Chrome Extensions Page**
-   - Navigate to `chrome://extensions/`
-   - Or click Menu → Extensions → Manage Extensions
+2. **باز کردن صفحه افزونه‌های کروم**[1]
+   - رفتن به `chrome://extensions/`  
+   - یا منو → Extensions → Manage Extensions[1]
 
-3. **Enable Developer Mode**
-   - Toggle "Developer mode" switch in top-right corner
+3. **فعال کردن حالت توسعه‌دهنده**[1]
+   - سوییچ «Developer mode» را در بالا سمت راست فعال کنید[1]
 
-4. **Load the Extension**
-   - Click "Load unpacked"
-   - Select the `auto-approve-clicker` folder
-   - Extension icon (⚡) should appear in toolbar
+4. **لود کردن افزونه**[1]
+   - روی «Load unpacked» کلیک کنید  
+   - پوشه `auto-approve-clicker` را انتخاب کنید  
+   - آیکن افزونه (⚡) باید در نوار ابزار ظاهر شود[1]
 
-## 🚀 Usage
+## 🚀 استفاده[1]
 
-### Quick Start (Perplexity GitHub Tool)
+### شروع سریع (ابزار GitHub پرپلکسیتی)[1]
 
-1. **Navigate to Perplexity**
-   - Go to perplexity.ai and start a conversation
-   - Use any GitHub-related commands that trigger approval prompts
+1. **رفتن به Perplexity**[1]
+   - به perplexity.ai بروید و یک گفتگو شروع کنید  
+   - از هر دستور مرتبط با GitHub که درخواست تأیید ایجاد می‌کند استفاده کنید[1]
 
-2. **Enable Auto-Clicking**
-   - Click the extension icon (⚡) in toolbar
-   - Click "▶️ Enable for This URL"
-   - Status will show "✅ Enabled"
+2. **فعال کردن کلیک خودکار**[1]
+   - روی آیکن افزونه (⚡) در نوار ابزار کلیک کنید  
+   - روی «▶️ Enable for This URL» کلیک کنید  
+   - وضعیت به «✅ Enabled» تغییر می‌کند[1]
 
-3. **Enjoy Automation**
-   - All Perplexity GitHub approval prompts will be automatically approved
-   - No more repetitive clicking required
-   - Console logs clicks for debugging
+3. **لذت از خودکارسازی**[1]
+   - همه درخواست‌های تأیید GitHub در Perplexity به‌صورت خودکار تأیید می‌شوند  
+   - دیگر نیازی به کلیک‌های تکراری نیست  
+   - برای دیباگ، کلیک‌ها در کنسول لاگ می‌شوند[1]
 
-### General Usage
+### استفاده عمومی[1]
 
-1. **Navigate to Target Page**
-   - Go to any webpage where you want auto-clicking enabled
+1. **رفتن به صفحه هدف**[1]
+   - به هر صفحه وبی بروید که می‌خواهید کلیک خودکار روی آن فعال شود[1]
 
-2. **Enable Auto-Clicking**
-   - Click the extension icon (⚡) in toolbar
-   - Click "▶️ Enable for This URL"
-   - Status will show "✅ Enabled"
+2. **فعال کردن کلیک خودکار**[1]
+   - روی آیکن افزونه (⚡) کلیک کنید  
+   - روی «▶️ Enable for This URL» کلیک کنید  
+   - وضعیت به «✅ Enabled» تغییر می‌کند[1]
 
-3. **Extension is Active**
-   - Every 1 second, the extension searches for Approve buttons
-   - Automatically clicks when found
-   - Console logs clicks for debugging
+3. **افزونه فعال است**[1]
+   - هر ۱ ثانیه، افزونه به‌دنبال دکمه Approve می‌گردد  
+   - در صورت پیدا کردن، به‌صورت خودکار کلیک می‌کند  
+   - کلیک‌ها در کنسول برای دیباگ ثبت می‌شوند[1]
 
-### Settings Page
+### صفحه تنظیمات[1]
 
-Access full settings via:
-- Right-click extension icon → "Options"
-- Or click "⚙️ Manage All URLs" in popup
+برای دسترسی به تنظیمات کامل:[1]
+- کلیک راست روی آیکن افزونه → «Options»  
+- یا کلیک روی «⚙️ Manage All URLs» در پاپ‌آپ[1]
 
-**Settings Features**:
-- **Add URLs**: Enter full or partial URLs (e.g., `perplexity.ai`, `example.com`)
-- **Remove URLs**: Click "Remove" next to any URL
-- **Clear All**: Remove all enabled URLs at once
-- **URL Counter**: See how many URLs are enabled
+**قابلیت‌های تنظیمات**:[1]
+- **افزودن URL**: وارد کردن URL کامل یا بخشی از آن (مثل `perplexity.ai`, `example.com`)  
+- **حذف URL**: کلیک روی «Remove» کنار هر URL  
+- **حذف همه**: پاک کردن همه URLهای فعال شده با یک کلیک  
+- **شمارنده URL**: نمایش تعداد URLهای فعال[1]
 
-### URL Matching
+### تطبیق URL[1]
 
-**Flexible Matching** - URLs use substring matching:
-- Enable `perplexity.ai` → Works on:
-  - `https://perplexity.ai`
-  - `https://www.perplexity.ai/search`
-  - Any Perplexity page or subdomain
+**تطبیق انعطاف‌پذیر** – URLها بر اساس زیررشته (substring) تطبیق داده می‌شوند:[1]
+- فعال کردن `perplexity.ai` → کار می‌کند روی:  
+  - `https://perplexity.ai`  
+  - `https://www.perplexity.ai/search`  
+  - هر صفحه یا زیردامنه Perplexity[1]
 
-**Best Practices**:
-- Use domain name only for entire site: `perplexity.ai`
-- Use full path for specific pages: `example.com/specific-page`
-- Add protocol to be more specific: `https://example.com`
+**بهترین شیوه‌ها**:[1]
+- برای کل سایت، فقط دامنه را وارد کنید: `perplexity.ai`  
+- برای صفحات خاص، مسیر کامل: `example.com/specific-page`  
+- برای دقت بیشتر، پروتکل را هم اضافه کنید: `https://example.com`[1]
 
-## 🛠️ Technical Details
+## 🛠️ جزئیات فنی[1]
 
-### Architecture
+### معماری[1]
 
-- **Manifest V3**: Latest Chrome extension standard
-- **Content Script** (`content.js`): Runs on all pages, activates when URL matches
-- **Background Worker** (`background.js`): Manages storage and coordinates components
-- **Options Page** (`options/`): Full URL management interface
-- **Popup** (`popup/`): Quick toggle for current tab
-- **Storage**: Chrome Sync Storage (cross-device sync)
+- **Manifest V3**: آخرین استاندارد افزونه‌های کروم[1]
+- **اسکریپت محتوا** (`content.js`): روی همه صفحات اجرا می‌شود و وقتی URL مطابق باشد فعال می‌گردد[1]
+- **ورکر پس‌زمینه** (`background.js`): مدیریت ذخیره‌سازی و هماهنگی بین اجزا[1]
+- **صفحه Options** (`options/`): رابط مدیریت کامل URLها[1]
+- **پاپ‌آپ** (`popup/`): پنجره سوییچ سریع برای تب فعلی[1]
+- **ذخیره‌سازی**: Chrome Sync Storage (همگام‌سازی بین دستگاه‌ها)[1]
 
-### File Structure
+### ساختار فایل‌ها[1]
 
-```
+```text
 auto-approve-clicker/
-├── manifest.json          # Extension configuration
-├── background.js          # Service worker
-├── content.js             # Auto-click logic
-├── icons/                 # Extension icons
+├── manifest.json          # تنظیمات افزونه
+├── background.js          # سرویس ورکر
+├── content.js             # منطق کلیک خودکار
+├── icons/                 # آیکن‌های افزونه
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
-├── options/               # Settings page
+├── options/               # صفحه تنظیمات
 │   ├── options.html
 │   └── options.js
-├── popup/                 # Quick toggle popup
+├── popup/                 # پاپ‌آپ سوییچ سریع
 │   ├── popup.html
 │   └── popup.js
-├── build-release.ps1      # Automated build script
-├── .buildignore           # Build exclusion config
-├── releases/              # Generated packages
-├── PROJECT_MAP.md         # Project structure docs
-├── PROGRESS.md            # Development progress
-└── README.md              # This file
+├── build-release.ps1      # اسکریپت ساخت خودکار
+├── .buildignore           # تنظیمات فایل‌های مستثنی از بیلد
+├── releases/              # بسته‌های تولید شده
+├── PROJECT_MAP.md         # مستندات ساختار پروژه
+├── PROGRESS.md            # پیشرفت توسعه
+└── README.md              # همین فایل
 ```
 
-### Button Detection Algorithm
 
-1. Query all buttons: `button.bg-inverse.text-inverse`
-2. Filter by text content: contains "approve" (case-insensitive)
-3. Click first matching button
-4. Repeat every 1000ms (1 second)
+### الگوریتم شناسایی دکمه[1]
 
-### Permissions
+1. کوئری همه دکمه‌ها: `button.bg-inverse.text-inverse`  
+2. فیلتر بر اساس متن: شامل «approve» (بدون حساسیت به حروف بزرگ/کوچک)[1]
+3. کلیک روی اولین دکمه مطابق  
+4. تکرار هر ۱۰۰۰ میلی‌ثانیه (۱ ثانیه)[1]
 
-- `storage`: Save enabled URLs list
-- `activeTab`: Access current tab in popup
-- `scripting`: Inject content script dynamically
-- `host_permissions: <all_urls>`: Run on any website
+### سطح دسترسی‌ها (Permissions)[1]
 
-## 🧪 Testing Checklist
+- `storage`: ذخیره لیست URLهای فعال  
+- `activeTab`: دسترسی به تب فعلی در پاپ‌آپ  
+- `scripting`: تزریق پویا اسکریپت محتوا  
+- `host_permissions: <all_urls>`: امکان اجرا روی همه وب‌سایت‌ها[1]
 
-- [ ] Extension loads without errors
-- [ ] Popup opens and shows current URL
-- [ ] Can enable URL from popup
-- [ ] Can disable URL from popup
-- [ ] Options page opens correctly
-- [ ] Can add URLs in options page
-- [ ] Can remove individual URLs
-- [ ] Can clear all URLs with confirmation
-- [ ] Content script activates on enabled URLs
-- [ ] Button is detected and clicked (test with Perplexity GitHub approvals)
-- [ ] Auto-click stops when URL disabled
-- [ ] Works on SPA navigation (URL changes without reload)
-- [ ] Changes sync across multiple tabs
-- [ ] No errors in console
+## 🧪 چک‌لیست تست[1]
 
-## 🐛 Troubleshooting
+- [ ] افزونه بدون خطا لود می‌شود  
+- [ ] پاپ‌آپ باز می‌شود و URL فعلی را نمایش می‌دهد  
+- [ ] امکان فعال‌سازی URL از پاپ‌آپ وجود دارد  
+- [ ] امکان غیرفعال‌سازی URL از پاپ‌آپ وجود دارد  
+- [ ] صفحه Options درست باز می‌شود  
+- [ ] امکان افزودن URL در صفحه Options وجود دارد  
+- [ ] امکان حذف URLهای تکی وجود دارد  
+- [ ] امکان پاک کردن همه URLها با تأیید وجود دارد  
+- [ ] اسکریپت محتوا روی URLهای فعال شده اجرا می‌شود  
+- [ ] دکمه شناسایی و کلیک می‌شود (مثال: تأییدهای GitHub در Perplexity)  
+- [ ] بعد از غیرفعال شدن URL، کلیک خودکار متوقف می‌شود  
+- [ ] روی ناوبری SPA (تغییر URL بدون رفرش) کار می‌کند  
+- [ ] تغییرات بین چند تب همگام می‌شود  
+- [ ] هیچ خطایی در کنسول دیده نمی‌شود[1]
 
-### Extension Not Working
+## 🐛 رفع اشکال[1]
 
-**Problem**: No buttons are being clicked
+### افزونه کار نمی‌کند[1]
 
-**Solutions**:
-1. Check if URL is enabled (popup should show "✅ Enabled")
-2. Open DevTools Console (F12) - look for `[Auto-Approve]` logs
-3. Verify button exists with correct classes: `bg-inverse text-inverse`
-4. Check button contains "Approve" text
-5. Try refreshing the page after enabling
+**مشکل**: هیچ دکمه‌ای کلیک نمی‌شود[1]
 
-### Button Not Detected
+**راه‌حل‌ها**:[1]
+1. بررسی کنید URL فعال باشد (در پاپ‌آپ باید «✅ Enabled» نشان داده شود)  
+2. کنسول DevTools (کلید F12) را باز کنید و به‌دنبال لاگ‌های `[Auto-Approve]` بگردید  
+3. مطمئن شوید دکمه با کلاس‌های `bg-inverse text-inverse` وجود دارد  
+4. بررسی کنید متن دکمه شامل «Approve» باشد  
+5. بعد از فعال‌سازی، صفحه را رفرش کنید[1]
 
-**Problem**: Logs show no button found
+### دکمه شناسایی نمی‌شود[1]
 
-**Solutions**:
-1. Inspect the button element (right-click → Inspect)
-2. Verify classes are exactly `bg-inverse` and `text-inverse`
-3. Check if button text contains "Approve"
-4. Button might load dynamically - extension checks every second
+**مشکل**: لاگ‌ها نشان می‌دهند که هیچ دکمه‌ای پیدا نشده[1]
 
-### URL Not Enabling
+**راه‌حل‌ها**:[1]
+1. روی دکمه راست‌کلیک کنید و «Inspect» را بزنید  
+2. مطمئن شوید کلاس‌ها دقیقاً `bg-inverse` و `text-inverse` هستند  
+3. مطمئن شوید متن دکمه شامل «Approve» است  
+4. دکمه ممکن است به‌صورت داینامیک لود شود – افزونه هر ثانیه چک می‌کند[1]
 
-**Problem**: Clicking "Enable" doesn't work
+### URL فعال نمی‌شود[1]
 
-**Solutions**:
-1. Check browser console for errors
-2. Try adding URL from settings page instead
-3. Verify you're not on restricted page (chrome://, etc.)
-4. Check extension has proper permissions
+**مشکل**: کلیک روی «Enable» کار نمی‌کند[1]
 
-### Sync Issues
+**راه‌حل‌ها**:[1]
+1. کنسول مرورگر را برای خطاها بررسی کنید  
+2. به‌جای پاپ‌آپ، از صفحه تنظیمات URL را اضافه کنید  
+3. مطمئن شوید روی صفحات محدود (مثل `chrome://`) نیستید  
+4. بررسی کنید افزونه همه مجوزهای لازم را دارد[1]
 
-**Problem**: Changes don't appear in other tabs
+### مشکلات همگام‌سازی[1]
 
-**Solutions**:
-1. Reload all tabs with the URL
-2. Check Chrome Sync is enabled in browser settings
-3. Wait a few seconds for sync to propagate
+**مشکل**: تغییرات در تب‌های دیگر ظاهر نمی‌شود[1]
 
-## ⚙️ Customization
+**راه‌حل‌ها**:[1]
+1. همه تب‌هایی که آن URL را دارند رفرش کنید  
+2. بررسی کنید Chrome Sync در تنظیمات مرورگر فعال باشد  
+3. چند ثانیه صبر کنید تا همگام‌سازی انجام شود[1]
 
-### Change Target Button
+## ⚙️ شخصی‌سازی[1]
 
-To target a different button, modify `content.js`:
+### تغییر دکمه هدف[1]
+
+برای هدف گرفتن دکمه‌ای دیگر، `content.js` را ویرایش کنید:[1]
 
 ```javascript
-// Line 13-14: Change selector
+// خط 13-14: تغییر selector
 const buttons = document.querySelectorAll('button.your-class-here');
 
-// Line 17-18: Change text matching
+// خط 17-18: تغییر تطبیق متن
 if (buttonText.toLowerCase().includes('your-text-here')) {
 ```
 
-### Change Click Interval
+### تغییر فاصله زمانی کلیک[1]
 
-To adjust click frequency, modify `content.js`:
+برای تنظیم فرکانس کلیک، فایل `content.js` را ویرایش کنید:[1]
 
 ```javascript
-// Line 42: Change interval (milliseconds)
+// خط 42: تغییر بازه (میلی‌ثانیه)
 clickInterval = setInterval(() => {
   findAndClickApproveButton();
-}, 1000); // Change 1000 to your desired interval
+}, 1000); // مقدار 1000 را به مقدار دلخواه خود تغییر دهید
 ```
 
-## 🏗️ Building for Release
+## 🏗️ ساخت نسخه انتشار (Release)[1]
 
-### Prerequisites
+### پیش‌نیازها[1]
 
-- **PowerShell 7+** required ([Download](https://github.com/PowerShell/PowerShell/releases))
-- Works on Windows, macOS, Linux
+- **PowerShell 7+** مورد نیاز است ([دانلود](https://github.com/PowerShell/PowerShell/releases))  
+- روی ویندوز، macOS و لینوکس کار می‌کند[1]
 
-### Quick Build
+### بیلد سریع[1]
 
-Create a production-ready release package:
+برای ساخت بسته آماده انتشار:[1]
 
 ```powershell
 ./build-release.ps1
 ```
 
-**What This Does**:
-1. ✅ Generates datetime-based version (e.g., `2025.12.30.1852`)
-2. ✅ Updates `manifest.json` with new version
-3. ✅ Creates ZIP package excluding dev files
-4. ✅ Saves to `releases/auto-approve-clicker-{version}.zip`
-5. ✅ Ready for Chrome Web Store submission
+**این اسکریپت چه می‌کند**:[1]
+1. ✅ تولید نسخه با فرمت مبتنی بر تاریخ و زمان (مثل `2025.12.30.1852`)  
+2. ✅ به‌روزرسانی `manifest.json` با نسخه جدید  
+3. ✅ ایجاد بسته ZIP بدون فایل‌های توسعه  
+4. ✅ ذخیره در `releases/auto-approve-clicker-{version}.zip`  
+5. ✅ آماده ارسال به Chrome Web Store[1]
 
-### Version Format
+### فرمت نسخه[1]
 
-**Automatic Versioning** (default):
-- Format: `YYYY.MM.DD.HHmm`
-- Example: `2025.12.30.1852` = December 30, 2025 at 6:52 PM
-- Each build gets unique version automatically
-- Compatible with Chrome extension requirements
+**نسخه‌دهی خودکار** (پیش‌فرض):[1]
+- فرمت: `YYYY.MM.DD.HHmm`  
+- مثال: `2025.12.30.1852` یعنی ۳۰ دسامبر ۲۰۲۵ ساعت ۱۸:۵۲  
+- هر بیلد نسخه منحصربه‌فرد خود را دارد  
+- مطابق با نیازهای نسخه‌دهی افزونه‌های کروم[1]
 
-**Custom Version** (optional):
+**نسخه سفارشی** (اختیاری):[1]
+
 ```powershell
 ./build-release.ps1 -CustomVersion "2.0.1.0"
 ```
-- Must be 1-4 dot-separated integers (0-65535)
-- Example: `1.0.0`, `2.5.1.0`
 
-### Advanced Options
+- باید ۱ تا ۴ عدد جداشده با نقطه (۰ تا ۶۵۵۳۵) باشد  
+- مثال: `1.0.0`، `2.5.1.0`[1]
 
-**Verbose Output** (for debugging):
+### گزینه‌های پیشرفته[1]
+
+**خروجی Verbose (برای دیباگ)**:[1]
+
 ```powershell
 ./build-release.ps1 -VerboseOutput
 ```
-Shows detailed file inclusion/exclusion information.
 
-### Customizing Build Exclusions
+اطلاعات جزئی درباره فایل‌های شامل/مستثنی نمایش می‌دهد.[1]
 
-Edit `.buildignore` to exclude additional files from builds:
+### شخصی‌سازی استثناهای بیلد[1]
+
+فایل `.buildignore` را برای مستثنی کردن فایل‌های بیشتر ویرایش کنید:[1]
 
 ```bash
-# .buildignore example
+# مثال .buildignore
 test/
 *.log
 temp*.txt
 notes.md
 ```
 
-**Default Exclusions** (always excluded):
-- `.git/`, `.github/` - Git metadata
-- `ROAD_MAP/` - Development roadmap  
-- `releases/` - Previous builds
-- `PROGRESS.md`, `PROJECT_MAP.md` - Dev docs
-- `.gitignore`, `.buildignore` - Config files
-- `*.ps1` - Build scripts
+**استثناهای پیش‌فرض** (همیشه مستثنی می‌شوند):[1]
+- `.git/`, `.github/` – متادیتای Git  
+- `ROAD_MAP/` – نقشه راه توسعه  
+- `releases/` – بیلدهای قبلی  
+- `PROGRESS.md`, `PROJECT_MAP.md` – مستندات توسعه  
+- `.gitignore`, `.buildignore` – فایل‌های تنظیمات  
+- `*.ps1` – اسکریپت‌های بیلد[1]
 
-### Build Output
+### خروجی بیلد[1]
 
-Successful build creates:
-```
+خروجی موفق بیلد:[1]
+
+```text
 releases/
 └── auto-approve-clicker-2025.12.30.1852.zip
 ```
 
-**Package Contents**:
-- `manifest.json` (with updated version)
-- `background.js`, `content.js`
-- `popup/`, `options/`, `icons/`
-- `README.md`
-- All other extension files
+**محتوای بسته**:[1]
+- `manifest.json` (با نسخه به‌روزشده)  
+- `background.js`, `content.js`  
+- پوشه‌های `popup/`, `options/`, `icons/`  
+- `README.md`  
+- همه فایل‌های دیگر افزونه[1]
 
-### After Building
+### بعد از بیلد[1]
 
-1. **Test the Build**:
-   - Extract ZIP to temporary folder
-   - Load in Chrome as unpacked extension
-   - Verify all functionality works
+1. **تست بیلد**:[1]
+   - فایل ZIP را در یک پوشه موقت Extract کنید  
+   - آن را به‌عنوان افزونه unpacked در کروم لود کنید  
+   - همه قابلیت‌ها را تست کنید[1]
 
-2. **Commit Version Update**:
+2. **کامیت نسخه جدید**:[1]
    ```bash
    git add manifest.json
    git commit -m "chore: Bump version to {version}"
    git push
    ```
 
-3. **Optional - Chrome Web Store**:
-   - Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-   - Upload the ZIP file
-   - Fill in store listing details
-   - Submit for review
+3. **اختیاری – Chrome Web Store**:[1]
+   - رفتن به [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)  
+   - آپلود فایل ZIP  
+   - تکمیل جزئیات صفحه افزونه  
+   - ارسال برای بررسی[1]
 
-4. **Optional - GitHub Release**:
+4. **اختیاری – انتشار در GitHub**:[1]
    ```bash
    git tag v{version}
    git push --tags
    ```
-   - Create release on GitHub
-   - Attach ZIP file as asset
+   - ساخت Release در GitHub  
+   - پیوست کردن فایل ZIP به‌عنوان asset[1]
 
-### Troubleshooting Builds
+### رفع اشکال بیلد[1]
 
-**Build Script Not Found**:
+**اسکریپت بیلد پیدا نمی‌شود**:[1]
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-**PowerShell Version Too Old**:
-- Download PowerShell 7+ from [official releases](https://github.com/PowerShell/PowerShell/releases)
-- Or use `pwsh` command if already installed
+**نسخه PowerShell خیلی قدیمی است**:[1]
+- نسخه ۷ یا بالاتر را از [صفحه رسمی](https://github.com/PowerShell/PowerShell/releases) دانلود کنید  
+- یا اگر نصب است، از دستور `pwsh` استفاده کنید[1]
 
-**Permission Errors**:
-- Run PowerShell as Administrator
-- Or change execution policy (see above)
+**خطای دسترسی (Permission)**:[1]
+- PowerShell را با دسترسی Administrator اجرا کنید  
+- یا سیاست اجرا را تغییر دهید (مثل دستور بالا)[1]
 
-**Manifest JSON Invalid**:
-- Validate JSON syntax in `manifest.json`
-- Script creates backup before modifying
-- Backup restored automatically on error
+**Manifest JSON نامعتبر است**:[1]
+- سینتکس JSON در `manifest.json` را بررسی کنید  
+- اسکریپت قبل از اعمال تغییرات یک بک‌آپ می‌سازد  
+- در صورت خطا، بک‌آپ به‌طور خودکار بازگردانی می‌شود[1]
 
-### Manual Build (Alternative)
+### بیلد دستی (جایگزین)[1]
 
-If PowerShell unavailable, create ZIP manually:
+اگر PowerShell در دسترس نیست، ZIP را دستی بسازید:[1]
 
-1. **Update Version**: Edit `manifest.json` → change `"version"` field
-2. **Create ZIP**: Select all extension files (exclude dev files)
-3. **Name ZIP**: `auto-approve-clicker-{version}.zip`
-4. **Exclude**: `.git`, `ROAD_MAP`, `*.ps1`, dev docs, etc.
+1. **به‌روزرسانی نسخه**: مقدار `version` در `manifest.json` را ویرایش کنید  
+2. **ساخت ZIP**: همه فایل‌های افزونه را (بدون فایل‌های توسعه) انتخاب و ZIP کنید  
+3. **نام‌گذاری ZIP**: `auto-approve-clicker-{version}.zip`  
+4. **مطمئن شوید مستثنی شده‌اند**: `.git`, `ROAD_MAP`, `*.ps1`, مستندات توسعه و غیره[1]
 
-## 📝 Development
+## 📝 توسعه[1]
 
-### Local Development
+### توسعه محلی[1]
 
-1. Make changes to source files
-2. Go to `chrome://extensions/`
-3. Click refresh icon on extension card
-4. Test changes immediately
+1. تغییرات موردنظر را در سورس انجام دهید  
+2. به `chrome://extensions/` بروید  
+3. روی آیکن رفرش کارت افزونه کلیک کنید  
+4. بلافاصله تغییرات را تست کنید[1]
 
-### Debugging
+### دیباگ[1]
 
-- **Content Script**: Open page DevTools (F12) → Console
-- **Background Worker**: Go to `chrome://extensions/` → Click "service worker"
-- **Popup**: Right-click extension icon → "Inspect popup"
-- **Options Page**: Right-click page → "Inspect"
+- **اسکریپت محتوا**: DevTools صفحه (کلید F12) → تب Console  
+- **ورکر پس‌زمینه**: `chrome://extensions/` → کلیک روی «service worker»  
+- **پاپ‌آپ**: کلیک راست روی آیکن افزونه → «Inspect popup»  
+- **صفحه Options**: کلیک راست روی صفحه → «Inspect»[1]
 
-### Project Documentation
+### مستندات پروژه[1]
 
-- `PROJECT_MAP.md`: Complete project structure and design
-- `PROGRESS.md`: Development progress and decisions
+- `PROJECT_MAP.md`: ساختار کامل پروژه و طراحی  
+- `PROGRESS.md`: پیشرفت توسعه و تصمیم‌ها[1]
 
-## 🤝 Contributing
+## 🤝 مشارکت[1]
 
-Contributions are welcome! Please:
+مشارکت‌ها خوش‌آمد هستند. لطفاً:[1]
+1. ریپازیتوری را Fork کنید  
+2. یک Branch برای ویژگی جدید بسازید  
+3. تغییرات خود را اعمال کنید  
+4. به‌خوبی تست کنید  
+5. Pull Request ارسال کنید[1]
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 📄 لایسنس[1]
 
-## 📄 License
+لایسنس MIT – فایل LICENSE را ببینید.[1]
 
-MIT License - see LICENSE file for details
+## 👤 نویسنده[1]
 
-## 👤 Author
+**RevEngine3r**[1]
+- GitHub: [@RevEngine3r](https://github.com/RevEngine3r)  
+- وب‌سایت: [RevEngine3r.ir](https://wWw.RevEngine3r.iR)[1]
 
-**RevEngine3r**
-- GitHub: [@RevEngine3r](https://github.com/RevEngine3r)
-- Website: [RevEngine3r.ir](https://wWw.RevEngine3r.iR)
+## ⚠️ سلب مسئولیت[1]
 
-## ⚠️ Disclaimer
+این افزونه برای اهداف آموزشی و خودکارسازی ساخته شده است. از آن به‌صورت مسئولانه استفاده کنید و مطمئن شوید برای خودکارسازی تعاملات در وب‌سایت‌ها مجوز دارید. نویسنده هیچ مسئولیتی در قبال هرگونه سوءاستفاده بر عهده نمی‌گیرد.[1]
 
-This extension is for educational and automation purposes. Use responsibly and ensure you have permission to automate interactions on websites you visit. The author is not responsible for any misuse.
+## 🙏 قدردانی[1]
 
-## 🙏 Acknowledgments
+- مستندات افزونه‌های Chrome  
+- راهنمای مهاجرت به Manifest V3  
+- Perplexity AI به‌خاطر الهام‌بخشی این راه‌حل خودکارسازی  
+- بازخوردها و مشارکت‌های جامعه[1]
 
-- Chrome Extensions Documentation
-- Manifest V3 Migration Guide
-- Perplexity AI for inspiring this automation solution
-- Community feedback and contributions
+***
 
----
-
-**Made with ⚡ by RevEngine3r | Automate Your Perplexity GitHub Workflow**
+**ساخته‌شده با ⚡ توسط RevEngine3r** [1]
