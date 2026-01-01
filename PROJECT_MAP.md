@@ -1,7 +1,7 @@
 # Auto-Approve Clicker - Project Map
 
 ## Purpose
-Chrome extension that automatically clicks "Approve" buttons every 1 second on manually enabled URLs.
+Chrome extension that automatically clicks "Approve" buttons every 0.5 seconds on manually enabled URLs, with real-time in-page log viewer.
 
 ## Tech Stack
 - **Extension Standard**: Manifest V3
@@ -17,6 +17,10 @@ auto-approve-clicker/
 ├── manifest.json              # Extension configuration (Manifest V3)
 ├── background.js              # Service worker for URL permission management
 ├── content.js                 # Script that finds and clicks Approve button
+├── utils/
+│   └── logger.js             # Centralized logging system with event dispatch
+├── ui/
+│   └── viewer.js             # In-page log viewer UI component
 ├── options/
 │   ├── options.html          # Settings page for managing enabled URLs
 │   └── options.js            # Logic for settings page
@@ -31,6 +35,7 @@ auto-approve-clicker/
 ├── .buildignore               # Build exclusion patterns
 ├── releases/                  # Generated release packages (auto-created)
 │   └── auto-approve-clicker-YYYY.MM.DD.HHmm.zip
+├── ROAD_MAP/                 # Feature roadmaps and planning
 ├── PROJECT_MAP.md            # This file
 ├── PROGRESS.md               # Task tracking and session continuity
 └── README.md                 # User documentation
@@ -39,8 +44,10 @@ auto-approve-clicker/
 ## Key Files
 
 ### Extension Core
-- **manifest.json**: Defines extension permissions, content scripts, background service worker
-- **content.js**: Searches for button with class="bg-inverse text-inverse" containing "Approve" text, clicks every 1s
+- **manifest.json**: Defines extension permissions, content scripts (logger.js, viewer.js, content.js), background service worker
+- **content.js**: Searches for button with class="bg-inverse text-inverse" containing "Approve" text, clicks every 0.5s. Uses Logger module for all output.
+- **utils/logger.js**: Centralized logging system that stores logs (max 1000), dispatches CustomEvents, and mirrors to console
+- **ui/viewer.js**: In-page log viewer with floating button, collapsible panel, copy/clear functionality
 - **background.js**: Manages enabled URLs list in chrome.storage.sync
 - **options.html/js**: Interface to add/remove URLs from enabled list
 - **popup.html/js**: Quick enable/disable for current tab URL
@@ -55,6 +62,22 @@ auto-approve-clicker/
   - Supports wildcards (*)
   - Comment support (#)
   - Extends default exclusions
+
+## Features
+
+### Auto-Clicking
+- Target button selector: `button.bg-inverse.text-inverse` containing text "Approve"
+- Click interval: 500ms (0.5 seconds)
+- Manual URL enable/disable via options page or popup
+- Automatic detection of URL changes (SPA support)
+
+### In-Page Log Viewer
+- **Floating button**: Bottom-right corner with log count badge
+- **Collapsible panel**: 420px dark-themed panel with smooth animations
+- **Log levels**: Info (blue), Success (green), Warn (yellow), Error (red)
+- **Controls**: Copy logs to clipboard, Clear all logs, Auto-scroll toggle
+- **Real-time updates**: Logs appear instantly via CustomEvent subscription
+- **Performance**: Max 1000 logs stored, automatic cleanup
 
 ## Build System
 
@@ -121,8 +144,9 @@ notes.md
 
 ### Standard Development
 1. Make code changes
-2. Test extension in Chrome Developer Mode
-3. Commit changes to Git
+2. Test extension in Chrome Developer Mode (load unpacked)
+3. View logs via in-page viewer (click floating button) or console
+4. Commit changes to Git
 
 ### Creating Release
 1. Run `./build-release.ps1`

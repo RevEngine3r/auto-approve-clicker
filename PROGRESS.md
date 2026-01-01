@@ -1,6 +1,6 @@
 # Auto-Approve Clicker - Progress Tracker
 
-## Active Feature: None (All features completed)
+## Active Feature: None (In-Page Log Viewer Complete)
 
 ---
 
@@ -15,41 +15,42 @@
 - .buildignore - Customizable exclusion configuration  
 - Complete Documentation in PROJECT_MAP.md and README.md
 
-**Features**:
-- One-command release builds: `./build-release.ps1`
-- Automatic datetime versioning (YYYY.MM.DD.HHmm)
-- Smart packaging excluding dev files
-- Manifest.json auto-update with backup/restore
-- Customizable via .buildignore
-- Verbose mode for debugging
-- Error handling with graceful failures
-
 ---
 
 ### 2. Placeholder Icons and Logo ✅  
-**Status**: In progress (feature/placeholder-icons-logo branch)  
+**Status**: Merged to main
 **Goal**: Add minimal placeholder files for extension icons and GitHub page logo
 
-**Changes Made**:
-- Replaced icons/icon16.png with minimal 1x1 PNG placeholder
-- Replaced icons/icon48.png with minimal 1x1 PNG placeholder  
-- Replaced icons/icon128.png with minimal 1x1 PNG placeholder
-- Added logo.png (minimal 1x1 PNG placeholder) for GitHub page
+---
 
-**Files Modified/Created**:
-- ✅ icons/icon16.png (placeholder)
-- ✅ icons/icon48.png (placeholder)
-- ✅ icons/icon128.png (placeholder)  
-- ✅ logo.png (new file, placeholder)
+### 3. In-Page Log Viewer ✅
+**Status**: Complete on feature branch `feature/in-page-log-viewer`
+**Goal**: Display extension logs directly on the webpage via floating button and collapsible panel
 
-**Note**: All placeholder files use minimal valid PNG format (1x1 transparent pixel, 95 bytes base64-encoded). Ready to be replaced with actual icon/logo designs later.
+**Deliverables**:
+- ✅ `utils/logger.js` - Centralized logging with event dispatch
+- ✅ `ui/viewer.js` - Complete UI with floating button, collapsible panel, controls
+- ✅ Refactored `content.js` to use Logger module
+- ✅ Updated `manifest.json` to inject new scripts
+- ✅ Updated `PROJECT_MAP.md` documentation
+
+**Features Implemented**:
+- Floating button (bottom-right) with log count badge
+- Collapsible dark-themed panel (420px, responsive)
+- Color-coded log levels (info, success, warn, error)
+- Copy logs to clipboard
+- Clear logs functionality
+- Auto-scroll toggle
+- Real-time log updates via CustomEvents
+- Smooth animations and transitions
+- Max 1000 logs with automatic cleanup
 
 **Next Steps**:
+- Manual testing across different pages
 - Create pull request to merge into main
-- Replace placeholders with actual designs when ready
+- Update README.md with feature documentation
 
 ---
 
 ## Notes
-
-This progress tracker follows the lightweight task approach - no roadmap needed for simple file replacements.
+Feature branch `feature/in-page-log-viewer` ready for testing and merge.
