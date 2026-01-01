@@ -398,7 +398,7 @@ class LogViewer {
                 justify-content: center !important;
                 z-index: 999998 !important;
                 transition: transform 0.2s, box-shadow 0.2s !important;
-                pointer-events: auto !important; /* Re-enable pointer events for button */
+                pointer-events: auto !important;
             }
 
             .aac-btn:hover {
@@ -425,7 +425,7 @@ class LogViewer {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
             }
 
-            /* Log panel */
+            /* Log panel - starts with pointer-events none, only enabled when visible */
             .aac-panel {
                 position: fixed !important;
                 bottom: 90px !important;
@@ -441,13 +441,18 @@ class LogViewer {
                 z-index: 999999 !important;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
                 transition: opacity 0.3s, transform 0.3s !important;
-                pointer-events: auto !important; /* Re-enable pointer events for panel */
+                pointer-events: none !important;
+            }
+
+            /* When panel is visible (not hidden), enable pointer events */
+            .aac-panel:not(.aac-hidden) {
+                pointer-events: auto !important;
             }
 
             .aac-panel.aac-hidden {
                 opacity: 0 !important;
                 transform: translateY(20px) !important;
-                pointer-events: none !important; /* Disable events when hidden */
+                pointer-events: none !important;
             }
 
             /* Panel header */
@@ -509,7 +514,6 @@ class LogViewer {
                 height: auto !important;
                 max-height: 100% !important;
                 scroll-behavior: smooth !important;
-                pointer-events: auto !important;
             }
 
             .aac-log-list::-webkit-scrollbar {
