@@ -190,7 +190,19 @@ class LogViewer {
 
         // Auto-scroll to bottom if enabled
         if (this.autoScroll) {
-            this.logList.scrollTop = this.logList.scrollHeight;
+            this._scrollToBottom();
+        }
+    }
+
+    /**
+     * Scroll the log list to the bottom safely
+     */
+    _scrollToBottom() {
+        if (this.logList) {
+            // Use requestAnimationFrame to ensure DOM update is processed
+            requestAnimationFrame(() => {
+                this.logList.scrollTop = this.logList.scrollHeight;
+            });
         }
     }
 
@@ -245,7 +257,7 @@ class LogViewer {
         this.panel.classList.remove('aac-hidden');
         this.isOpen = true;
         if (this.autoScroll) {
-            this.logList.scrollTop = this.logList.scrollHeight;
+            this._scrollToBottom();
         }
     }
 
@@ -379,6 +391,7 @@ class LogViewer {
                 z-index: 999999 !important;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
                 transition: opacity 0.3s, transform 0.3s !important;
+                pointer-events: auto !important;
             }
 
             .aac-panel.aac-hidden {
@@ -394,6 +407,7 @@ class LogViewer {
                 justify-content: space-between !important;
                 padding: 16px !important;
                 border-bottom: 1px solid #2a2a2a !important;
+                flex-shrink: 0 !important;
             }
 
             .aac-panel-title {
@@ -427,17 +441,25 @@ class LogViewer {
 
             /* Panel body */
             .aac-panel-body {
-                flex: 1 !important;
+                flex: 1 1 auto !important;
                 overflow: hidden !important;
                 padding: 12px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 0 !important;
+                position: relative !important;
             }
 
             .aac-log-list {
-                height: 100% !important;
+                flex: 1 1 auto !important;
                 overflow-y: auto !important;
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 8px !important;
+                height: auto !important;
+                max-height: 100% !important;
+                scroll-behavior: smooth !important;
+                pointer-events: auto !important;
             }
 
             .aac-log-list::-webkit-scrollbar {
@@ -467,6 +489,7 @@ class LogViewer {
                 border-radius: 8px !important;
                 border-left: 3px solid !important;
                 animation: aac-fade-in 0.3s !important;
+                flex-shrink: 0 !important;
             }
 
             @keyframes aac-fade-in {
@@ -534,6 +557,7 @@ class LogViewer {
             .aac-panel-footer {
                 padding: 12px 16px !important;
                 border-top: 1px solid #2a2a2a !important;
+                flex-shrink: 0 !important;
             }
 
             .aac-checkbox-label {
