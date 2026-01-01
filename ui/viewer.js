@@ -10,13 +10,26 @@ class LogViewer {
         this.logList = null;
         this.toggleButton = null;
         this.panel = null;
+        this.initialized = false;
     }
 
     /**
      * Initialize and inject the UI into the page
      */
     init() {
-        if (this.container) return; // Already initialized
+        if (this.initialized) {
+            console.log('[LogViewer] Already initialized, skipping');
+            return;
+        }
+
+        // Ensure document.body exists
+        if (!document.body) {
+            console.log('[LogViewer] document.body not ready, waiting...');
+            setTimeout(() => this.init(), 100);
+            return;
+        }
+
+        console.log('[LogViewer] Initializing...');
 
         // Create main container
         this.container = document.createElement('div');
@@ -28,11 +41,17 @@ class LogViewer {
 
         // Append to body
         document.body.appendChild(this.container);
+        console.log('[LogViewer] UI elements appended to body');
 
         // Get element references
         this.toggleButton = document.getElementById('aac-toggle-btn');
         this.panel = document.getElementById('aac-log-panel');
         this.logList = document.getElementById('aac-log-list');
+
+        if (!this.toggleButton || !this.panel || !this.logList) {
+            console.error('[LogViewer] Failed to get element references!');
+            return;
+        }
 
         // Set up event listeners
         this._setupEventListeners();
@@ -49,6 +68,9 @@ class LogViewer {
         window.addEventListener('aac-logs-cleared', () => {
             this.clearUI();
         });
+
+        this.initialized = true;
+        console.log('[LogViewer] Initialization complete!');
     }
 
     /**
@@ -134,6 +156,7 @@ class LogViewer {
     _loadExistingLogs() {
         if (window.AutoApproveLogger && window.AutoApproveLogger.logs) {
             const logs = window.AutoApproveLogger.logs;
+            console.log(`[LogViewer] Loading ${logs.length} existing logs`);
             logs.forEach(log => this.renderLog(log));
         }
     }
@@ -142,12 +165,16 @@ class LogViewer {
      * Render a single log entry
      */
     renderLog(log) {
+        if (!this.logList) {
+            console.warn('[LogViewer] Cannot render log, logList not initialized');
+            return;
+        }
+
         const logEntry = document.createElement('div');
         logEntry.className = `aac-log-entry aac-log-${log.level}`;
         logEntry.dataset.logId = log.id;
 
         const icon = this._getIconForLevel(log.level);
-        const dataStr = log.data ? `\n${JSON.stringify(log.data, null, 2)}` : '';
 
         logEntry.innerHTML = `
             <div class="aac-log-icon">${icon}</div>
@@ -194,7 +221,10 @@ class LogViewer {
      */
     _updateLogCount() {
         const count = this.logList.children.length;
-        document.getElementById('aac-log-count').textContent = count;
+        const badge = document.getElementById('aac-log-count');
+        if (badge) {
+            badge.textContent = count;
+        }
     }
 
     /**
@@ -241,8 +271,10 @@ class LogViewer {
      * Clear UI only
      */
     clearUI() {
-        this.logList.innerHTML = '';
-        this._updateLogCount();
+        if (this.logList) {
+            this.logList.innerHTML = '';
+            this._updateLogCount();
+        }
     }
 
     /**
@@ -289,152 +321,152 @@ class LogViewer {
 
             /* Floating toggle button */
             .aac-btn {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                border: none;
-                color: white;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 999998;
-                transition: transform 0.2s, box-shadow 0.2s;
+                position: fixed !important;
+                bottom: 20px !important;
+                right: 20px !important;
+                width: 56px !important;
+                height: 56px !important;
+                border-radius: 50% !important;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                border: none !important;
+                color: white !important;
+                cursor: pointer !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                z-index: 999998 !important;
+                transition: transform 0.2s, box-shadow 0.2s !important;
             }
 
             .aac-btn:hover {
-                transform: scale(1.05);
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+                transform: scale(1.05) !important;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
             }
 
             .aac-btn:active {
-                transform: scale(0.95);
+                transform: scale(0.95) !important;
             }
 
             .aac-badge {
-                position: absolute;
-                top: -4px;
-                right: -4px;
-                background: #ef4444;
-                color: white;
-                font-size: 11px;
-                font-weight: 600;
-                padding: 2px 6px;
-                border-radius: 10px;
-                min-width: 20px;
-                text-align: center;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                position: absolute !important;
+                top: -4px !important;
+                right: -4px !important;
+                background: #ef4444 !important;
+                color: white !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                padding: 2px 6px !important;
+                border-radius: 10px !important;
+                min-width: 20px !important;
+                text-align: center !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
             }
 
             /* Log panel */
             .aac-panel {
-                position: fixed;
-                bottom: 90px;
-                right: 20px;
-                width: 420px;
-                max-width: calc(100vw - 40px);
-                max-height: 600px;
-                background: #1a1a1a;
-                border-radius: 12px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-                display: flex;
-                flex-direction: column;
-                z-index: 999999;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                transition: opacity 0.3s, transform 0.3s;
+                position: fixed !important;
+                bottom: 90px !important;
+                right: 20px !important;
+                width: 420px !important;
+                max-width: calc(100vw - 40px) !important;
+                max-height: 600px !important;
+                background: #1a1a1a !important;
+                border-radius: 12px !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                z-index: 999999 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+                transition: opacity 0.3s, transform 0.3s !important;
             }
 
             .aac-panel.aac-hidden {
-                opacity: 0;
-                transform: translateY(20px);
-                pointer-events: none;
+                opacity: 0 !important;
+                transform: translateY(20px) !important;
+                pointer-events: none !important;
             }
 
             /* Panel header */
             .aac-panel-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 16px;
-                border-bottom: 1px solid #2a2a2a;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 16px !important;
+                border-bottom: 1px solid #2a2a2a !important;
             }
 
             .aac-panel-title {
-                font-size: 16px;
-                font-weight: 600;
-                color: #ffffff;
+                font-size: 16px !important;
+                font-weight: 600 !important;
+                color: #ffffff !important;
             }
 
             .aac-panel-controls {
-                display: flex;
-                gap: 8px;
+                display: flex !important;
+                gap: 8px !important;
             }
 
             .aac-control-btn {
-                background: transparent;
-                border: none;
-                color: #9ca3af;
-                cursor: pointer;
-                padding: 6px;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.2s, color 0.2s;
+                background: transparent !important;
+                border: none !important;
+                color: #9ca3af !important;
+                cursor: pointer !important;
+                padding: 6px !important;
+                border-radius: 6px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                transition: background 0.2s, color 0.2s !important;
             }
 
             .aac-control-btn:hover {
-                background: #2a2a2a;
-                color: #ffffff;
+                background: #2a2a2a !important;
+                color: #ffffff !important;
             }
 
             /* Panel body */
             .aac-panel-body {
-                flex: 1;
-                overflow: hidden;
-                padding: 12px;
+                flex: 1 !important;
+                overflow: hidden !important;
+                padding: 12px !important;
             }
 
             .aac-log-list {
-                height: 100%;
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
+                height: 100% !important;
+                overflow-y: auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
             }
 
             .aac-log-list::-webkit-scrollbar {
-                width: 8px;
+                width: 8px !important;
             }
 
             .aac-log-list::-webkit-scrollbar-track {
-                background: #0a0a0a;
-                border-radius: 4px;
+                background: #0a0a0a !important;
+                border-radius: 4px !important;
             }
 
             .aac-log-list::-webkit-scrollbar-thumb {
-                background: #3a3a3a;
-                border-radius: 4px;
+                background: #3a3a3a !important;
+                border-radius: 4px !important;
             }
 
             .aac-log-list::-webkit-scrollbar-thumb:hover {
-                background: #4a4a4a;
+                background: #4a4a4a !important;
             }
 
             /* Log entries */
             .aac-log-entry {
-                display: flex;
-                gap: 10px;
-                padding: 10px;
-                background: #0f0f0f;
-                border-radius: 8px;
-                border-left: 3px solid;
-                animation: aac-fade-in 0.3s;
+                display: flex !important;
+                gap: 10px !important;
+                padding: 10px !important;
+                background: #0f0f0f !important;
+                border-radius: 8px !important;
+                border-left: 3px solid !important;
+                animation: aac-fade-in 0.3s !important;
             }
 
             @keyframes aac-fade-in {
@@ -448,101 +480,111 @@ class LogViewer {
                 }
             }
 
-            .aac-log-info { border-color: #3b82f6; }
-            .aac-log-success { border-color: #10b981; }
-            .aac-log-warn { border-color: #f59e0b; }
-            .aac-log-error { border-color: #ef4444; }
+            .aac-log-info { border-color: #3b82f6 !important; }
+            .aac-log-success { border-color: #10b981 !important; }
+            .aac-log-warn { border-color: #f59e0b !important; }
+            .aac-log-error { border-color: #ef4444 !important; }
 
             .aac-log-icon {
-                flex-shrink: 0;
-                width: 20px;
-                height: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                flex-shrink: 0 !important;
+                width: 20px !important;
+                height: 20px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
 
-            .aac-log-info .aac-log-icon { color: #3b82f6; }
-            .aac-log-success .aac-log-icon { color: #10b981; }
-            .aac-log-warn .aac-log-icon { color: #f59e0b; }
-            .aac-log-error .aac-log-icon { color: #ef4444; }
+            .aac-log-info .aac-log-icon { color: #3b82f6 !important; }
+            .aac-log-success .aac-log-icon { color: #10b981 !important; }
+            .aac-log-warn .aac-log-icon { color: #f59e0b !important; }
+            .aac-log-error .aac-log-icon { color: #ef4444 !important; }
 
             .aac-log-content {
-                flex: 1;
-                min-width: 0;
+                flex: 1 !important;
+                min-width: 0 !important;
             }
 
             .aac-log-time {
-                font-size: 11px;
-                color: #6b7280;
-                margin-bottom: 4px;
-                font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+                font-size: 11px !important;
+                color: #6b7280 !important;
+                margin-bottom: 4px !important;
+                font-family: 'SF Mono', 'Monaco', 'Courier New', monospace !important;
             }
 
             .aac-log-message {
-                font-size: 13px;
-                color: #e5e7eb;
-                line-height: 1.5;
-                word-break: break-word;
+                font-size: 13px !important;
+                color: #e5e7eb !important;
+                line-height: 1.5 !important;
+                word-break: break-word !important;
             }
 
             .aac-log-data {
-                margin-top: 6px;
-                padding: 8px;
-                background: #000000;
-                border-radius: 4px;
-                font-size: 11px;
-                color: #9ca3af;
-                font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-                overflow-x: auto;
-                white-space: pre-wrap;
+                margin-top: 6px !important;
+                padding: 8px !important;
+                background: #000000 !important;
+                border-radius: 4px !important;
+                font-size: 11px !important;
+                color: #9ca3af !important;
+                font-family: 'SF Mono', 'Monaco', 'Courier New', monospace !important;
+                overflow-x: auto !important;
+                white-space: pre-wrap !important;
             }
 
             /* Panel footer */
             .aac-panel-footer {
-                padding: 12px 16px;
-                border-top: 1px solid #2a2a2a;
+                padding: 12px 16px !important;
+                border-top: 1px solid #2a2a2a !important;
             }
 
             .aac-checkbox-label {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                cursor: pointer;
-                color: #9ca3af;
-                font-size: 13px;
-                user-select: none;
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                cursor: pointer !important;
+                color: #9ca3af !important;
+                font-size: 13px !important;
+                user-select: none !important;
             }
 
             .aac-checkbox-label input[type="checkbox"] {
-                cursor: pointer;
-                width: 16px;
-                height: 16px;
+                cursor: pointer !important;
+                width: 16px !important;
+                height: 16px !important;
             }
 
             .aac-checkbox-label:hover {
-                color: #ffffff;
+                color: #ffffff !important;
             }
 
             /* Responsive */
             @media (max-width: 640px) {
                 .aac-panel {
-                    width: calc(100vw - 40px);
-                    max-height: 400px;
+                    width: calc(100vw - 40px) !important;
+                    max-height: 400px !important;
                 }
             }
         `;
         document.head.appendChild(style);
+        console.log('[LogViewer] Styles injected');
     }
 }
 
-// Initialize the viewer when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+// Initialize the viewer - wait for both DOM and a slight delay
+console.log('[LogViewer] Script loaded, document.readyState:', document.readyState);
+
+function initializeViewer() {
+    console.log('[LogViewer] Attempting to initialize viewer...');
+    // Wait a bit more to ensure content.js has run
+    setTimeout(() => {
         const viewer = new LogViewer();
         viewer.init();
-    });
+        // Expose globally for debugging
+        window.AutoApproveLogViewer = viewer;
+    }, 500);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeViewer);
 } else {
-    const viewer = new LogViewer();
-    viewer.init();
+    initializeViewer();
 }
