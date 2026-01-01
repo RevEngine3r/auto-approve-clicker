@@ -56,7 +56,8 @@ $Script:DefaultExclusions = @(
     ".buildignore",
     "build-release.ps1",
     "*.ps1",
-    "*.bat"
+    "*.bat",
+	"*.backup"
 )
 
 #region Helper Functions
