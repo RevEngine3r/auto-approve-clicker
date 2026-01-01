@@ -11,6 +11,7 @@ class LogViewer {
         this.toggleButton = null;
         this.panel = null;
         this.initialized = false;
+        this.isVisible = false;
     }
 
     /**
@@ -53,6 +54,9 @@ class LogViewer {
             return;
         }
 
+        // Start hidden
+        this.hide();
+
         // Set up event listeners
         this._setupEventListeners();
 
@@ -69,8 +73,41 @@ class LogViewer {
             this.clearUI();
         });
 
+        // Listen for extension enabled/disabled events
+        window.addEventListener('aac-extension-enabled', () => {
+            console.log('[LogViewer] Extension enabled, showing viewer');
+            this.show();
+        });
+
+        window.addEventListener('aac-extension-disabled', () => {
+            console.log('[LogViewer] Extension disabled, hiding viewer');
+            this.hide();
+        });
+
         this.initialized = true;
         console.log('[LogViewer] Initialization complete!');
+    }
+
+    /**
+     * Show the viewer button
+     */
+    show() {
+        if (this.container) {
+            this.container.style.display = '';
+            this.isVisible = true;
+            console.log('[LogViewer] Viewer shown');
+        }
+    }
+
+    /**
+     * Hide the viewer button and panel
+     */
+    hide() {
+        if (this.container) {
+            this.container.style.display = 'none';
+            this.isVisible = false;
+            console.log('[LogViewer] Viewer hidden');
+        }
     }
 
     /**
